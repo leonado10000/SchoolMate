@@ -217,18 +217,18 @@
             <th class="subtotal">TOTAL (50)</th>
 
             <!-- Drawing -->
-            <th class="theory">THY. <br>(40)</th>
-            <th class="assessment">ASS. <br>(10)</th>
+            <th class="theory">THY. <br>(25)</th>
+            <th class="assessment">ASS. <br>(25)</th>
             <th class="subtotal">TOTAL (50)</th>
 
             <!-- Computer/Music -->
-            <th class="theory">THY. <br>(40)</th>
-            <th class="assessment">ASS. <br>(10)</th>
+            <th class="theory">THY. <br>(25)</th>
+            <th class="assessment">ASS. <br>(25)</th>
             <th class="subtotal">TOTAL (50)</th>
 
             <!-- GK -->
-            <th class="theory">THY. <br>(40)</th>
-            <th class="assessment">ASS. <br>(10)</th>
+            <th class="theory">THY. <br>(25)</th>
+            <th class="assessment">ASS. <br>(25)</th>
             <th class="subtotal">TOTAL (50)</th>
         </tr>
         </thead>
@@ -345,7 +345,7 @@
                         data-student="{{ scorecard.student.student_id }}"
                         data-subject="drawing"
                         value="{{ scorecard.drawing_theory }}"
-                        min="0" max="40">
+                        min="0" max="25">
                 </td>
                 <td class="assessment" data-label="Drawing Assessment">
                     <input type="number" name="drawing_assessment_{{ scorecard.student.student_id }}"
@@ -353,7 +353,7 @@
                         data-student="{{ scorecard.student.student_id }}"
                         data-subject="drawing"
                         value="{{ scorecard.drawing_assessment }}"
-                        min="0" max="10">
+                        min="0" max="25">
                 </td>
                 <td class="subtotal" data-label="Drawing Subtotal">
                     <input type="text" name="drawing_subtotal_{{ scorecard.student.student_id }}"
@@ -370,7 +370,7 @@
                         data-student="{{ scorecard.student.student_id }}"
                         data-subject="computer_music"
                         value="{{ scorecard.computer_music_theory }}"
-                        min="0" max="40">
+                        min="0" max="25">
                 </td>
                 <td class="assessment" data-label="Computer/Music Assessment">
                     <input type="number" name="computer_music_assessment_{{ scorecard.student.student_id }}"
@@ -378,7 +378,7 @@
                         data-student="{{ scorecard.student.student_id }}"
                         data-subject="computer_music"
                         value="{{ scorecard.computer_music_assessment }}"
-                        min="0" max="10">
+                        min="0" max="25">
                 </td>
                 <td class="subtotal" data-label="Computer/Music Subtotal">
                     <input type="text" name="computer_music_subtotal_{{ scorecard.student.student_id }}"
@@ -395,7 +395,7 @@
                         data-student="{{ scorecard.student.student_id }}"
                         data-subject="gk"
                         value="{{ scorecard.gk_theory }}"
-                        min="0" max="40">
+                        min="0" max="25">
                 </td>
                 <td class="assessment" data-label="GK Assessment">
                     <input type="number" name="gk_assessment_{{ scorecard.student.student_id }}"
@@ -403,7 +403,7 @@
                         data-student="{{ scorecard.student.student_id }}"
                         data-subject="gk"
                         value="{{ scorecard.gk_assessment }}"
-                        min="0" max="10">
+                        min="0" max="25">
                 </td>
                 <td class="subtotal" data-label="GK Subtotal">
                     <input type="text" name="gk_subtotal_{{ scorecard.student.student_id }}"

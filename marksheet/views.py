@@ -181,7 +181,7 @@ def marksheet_pdf_download(request, marksheet_id):
         cols.append('')
         cols.append('')
     columns = [["Roll\nNo", "Name"] + cols + ["Marks\nObtained", "Percent"],
-               ['', ''] + ['th', 'as', 'T'] * len(subjects) + ['', '']]
+               ['', ''] + ['theo.', 'ass.', 'Total'] * len(subjects) + ['', '']]
 
     # -------- Table Body ----------
     table_rows = []
@@ -264,7 +264,8 @@ def marksheet_pdf_download(request, marksheet_id):
         ('BACKGROUND', (0,0), (-1,0), colors.lightgrey),
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('FONTNAME', (0,0), (-1,-1), 'Helvetica'),
-        ('FONTSIZE', (0,0), (-1,-1), 10),
+        ('FONTSIZE', (1,1), (-1,1), 6),
+        ('FONTSIZE', (2,2), (-1,-1), 11),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         ('ROWBACKGROUNDS', (0,2), (-1,-1), [colors.whitesmoke, colors.white]),
     ] + span_commands))
@@ -410,7 +411,7 @@ def scorecard_pdf_download(request, student_id, sem):
 
         for key in graded_keys:
             score = getattr(card, f'{key}_total')
-            setattr(card, f'{key}_total', grade_this_score(score, max_marks_per_subject))
+            setattr(card, f'{key}_total', grade_this_score(score, 50))
 
     num_terms = len(scorecards)
     for key in show_keys:
@@ -421,7 +422,7 @@ def scorecard_pdf_download(request, student_id, sem):
         num_completed = completed_counts[key]
         if num_completed > 0:
             avg_score = final_marks[f'{key}_final_total'] / num_completed
-            final_grade = grade_this_score(avg_score, max_marks_per_subject)
+            final_grade = grade_this_score(avg_score, 50)
         else:
             final_grade = 'F'
         final_marks[f'{key}_final_total'] = final_grade

@@ -225,14 +225,14 @@
             <th class="subtotal">TOTAL (100)</th>
 
             <!-- Computer/Music -->
-            <th class="theory">THY. <br>(80)</th>
-            <th class="assessment">ASS. <br>(20)</th>
-            <th class="subtotal">TOTAL (100)</th>
+            <th class="theory">THY. <br>(25)</th>
+            <th class="assessment">ASS. <br>(25)</th>
+            <th class="subtotal">TOTAL (50)</th>
 
             <!-- GK -->
-            <th class="theory">THY. <br>(80)</th>
-            <th class="assessment">ASS. <br>(20)</th>
-            <th class="subtotal">TOTAL (100)</th>
+            <th class="theory">THY. <br>(25)</th>
+            <th class="assessment">ASS. <br>(25)</th>
+            <th class="subtotal">TOTAL (50)</th>
         </tr>
         </thead>
 
@@ -398,7 +398,7 @@
                         data-student="{{ scorecard.student.student_id }}"
                         data-subject="computer_music"
                         value="{{ scorecard.computer_music_theory }}"
-                        min="0" max="80">
+                        min="0" max="25">
                 </td>
                 <td class="assessment" data-label="Computer/Music Assessment">
                     <input type="number" name="computer_music_assessment_{{ scorecard.student.student_id }}"
@@ -406,7 +406,7 @@
                         data-student="{{ scorecard.student.student_id }}"
                         data-subject="computer_music"
                         value="{{ scorecard.computer_music_assessment }}"
-                        min="0" max="20">
+                        min="0" max="25">
                 </td>
                 <td class="subtotal" data-label="Computer/Music Subtotal">
                     <input type="text" name="computer_music_subtotal_{{ scorecard.student.student_id }}"
@@ -423,7 +423,7 @@
                         data-student="{{ scorecard.student.student_id }}"
                         data-subject="gk"
                         value="{{ scorecard.gk_theory }}"
-                        min="0" max="80">
+                        min="0" max="25">
                 </td>
                 <td class="assessment" data-label="GK Assessment">
                     <input type="number" name="gk_assessment_{{ scorecard.student.student_id }}"
@@ -431,7 +431,7 @@
                         data-student="{{ scorecard.student.student_id }}"
                         data-subject="gk"
                         value="{{ scorecard.gk_assessment }}"
-                        min="0" max="20">
+                        min="0" max="25">
                 </td>
                 <td class="subtotal" data-label="GK Subtotal">
                     <input type="text" name="gk_subtotal_{{ scorecard.student.student_id }}"
@@ -481,13 +481,13 @@
             const theoryInput = parseInt(document.querySelector(`input[name="${subject}_theory_${studentId}"]`).value);
             const assessmentInput = parseInt(document.querySelector(`input[name="${subject}_assessment_${studentId}"]`).value);
             
-            if (theoryInput + assessmentInput < 12.5) {subtotalInput.value = "F"}
-            else if (theoryInput + assessmentInput < 25) {subtotalInput.value = "E"}
-            else if (theoryInput + assessmentInput < 37.5) {subtotalInput.value = "D"}
-            else if (theoryInput + assessmentInput < 50) {subtotalInput.value = "C"}
-            else if (theoryInput + assessmentInput < 62.5) {subtotalInput.value = "B"}
-            else if (theoryInput + assessmentInput < 75) {subtotalInput.value = "A"}
-            else if (theoryInput + assessmentInput < 87.5) {subtotalInput.value = "A+"}
+            if (theoryInput + assessmentInput < 12.5/2) {subtotalInput.value = "F"}
+            else if (theoryInput + assessmentInput < 25/2) {subtotalInput.value = "E"}
+            else if (theoryInput + assessmentInput < 37.5/2) {subtotalInput.value = "D"}
+            else if (theoryInput + assessmentInput < 50/2) {subtotalInput.value = "C"}
+            else if (theoryInput + assessmentInput < 62.5/2) {subtotalInput.value = "B"}
+            else if (theoryInput + assessmentInput < 75/2) {subtotalInput.value = "A"}
+            else if (theoryInput + assessmentInput < 87.5/2) {subtotalInput.value = "A+"}
             else {subtotalInput.value = "A++"}
 
             console.log(subtotalInput.value)
