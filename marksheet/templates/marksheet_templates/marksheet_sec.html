@@ -452,7 +452,8 @@
         </tbody>
     </table>
 </div>
-    <button type="submit" class="submit-btn btn btn-success">Submit Marks</button>
+<button type="submit" class="submit-btn btn btn-success">Submit Marks</button>    
+<a href="{% url 'marksheet_download' marksheet_id=marksheet.id %}" class="submit-btn btn btn-success">Download marksheet</a>
 </form>
 
 <script>    

@@ -13,7 +13,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 from reportlab.lib.units import inch
-from reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import A4, landscape
 
 @login_required(login_url='/login')
 @bronzelogger
@@ -93,24 +93,42 @@ def marksheet_view(request, sheet_id):
 
             # --- If existing scorecard, update marks from data ---
         if not created_sc:
-            scorecard_obj.hindi_theory = data.get(f"hindi_theory_{student.student_id}", scorecard_obj.hindi_theory)
-            scorecard_obj.hindi_assessment = data.get(f"hindi_assessment_{student.student_id}", scorecard_obj.hindi_assessment)
-            scorecard_obj.english_theory = data.get(f"english_theory_{student.student_id}", scorecard_obj.english_theory)
-            scorecard_obj.english_assessment = data.get(f"english_assessment_{student.student_id}", scorecard_obj.english_assessment)
-            scorecard_obj.maths_theory = data.get(f"maths_theory_{student.student_id}", scorecard_obj.maths_theory)
-            scorecard_obj.maths_assessment = data.get(f"maths_assessment_{student.student_id}", scorecard_obj.maths_assessment)
-            scorecard_obj.science_theory = data.get(f"science_theory_{student.student_id}", scorecard_obj.science_theory)
-            scorecard_obj.science_assessment = data.get(f"science_assessment_{student.student_id}", scorecard_obj.science_assessment)
-            scorecard_obj.sst_evs_theory = data.get(f"sst_evs_theory_{student.student_id}", scorecard_obj.sst_evs_theory)
-            scorecard_obj.sst_evs_assessment = data.get(f"sst_evs_assessment_{student.student_id}", scorecard_obj.sst_evs_assessment)
-            scorecard_obj.drawing_theory = data.get(f"drawing_theory_{student.student_id}", scorecard_obj.drawing_theory)
-            scorecard_obj.drawing_assessment = data.get(f"drawing_assessment_{student.student_id}", scorecard_obj.drawing_assessment)
-            scorecard_obj.computer_music_theory = data.get(f"computer_music_theory_{student.student_id}", scorecard_obj.computer_music_theory)
-            scorecard_obj.computer_music_assessment = data.get(f"computer_music_assessment_{student.student_id}", scorecard_obj.computer_music_assessment)
-            scorecard_obj.gk_theory = data.get(f"gk_theory_{student.student_id}", scorecard_obj.gk_theory)
-            scorecard_obj.gk_assessment = data.get(f"gk_assessment_{student.student_id}", scorecard_obj.gk_assessment)
-            scorecard_obj.punjabi_skt_theory = data.get(f"punjabi_skt_theory_{student.student_id}", scorecard_obj.punjabi_skt_theory)
-            scorecard_obj.punjabi_skt_assessment = data.get(f"punjabi_skt_assessment_{student.student_id}", scorecard_obj.punjabi_skt_assessment)
+            temp_marks = data.get(f"hindi_theory_{student.student_id}", scorecard_obj.hindi_theory)
+            scorecard_obj.hindi_theory = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"hindi_assessment_{student.student_id}", scorecard_obj.hindi_assessment)
+            scorecard_obj.hindi_assessment = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"english_theory_{student.student_id}", scorecard_obj.english_theory)
+            scorecard_obj.english_theory = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"english_assessment_{student.student_id}", scorecard_obj.english_assessment)
+            scorecard_obj.english_assessment = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"maths_theory_{student.student_id}", scorecard_obj.maths_theory)
+            scorecard_obj.maths_theory = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"maths_assessment_{student.student_id}", scorecard_obj.maths_assessment)
+            scorecard_obj.maths_assessment = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"science_theory_{student.student_id}", scorecard_obj.science_theory)
+            scorecard_obj.science_theory = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"science_assessment_{student.student_id}", scorecard_obj.science_assessment)
+            scorecard_obj.science_assessment = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"sst_evs_theory_{student.student_id}", scorecard_obj.sst_evs_theory)
+            scorecard_obj.sst_evs_theory = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"sst_evs_assessment_{student.student_id}", scorecard_obj.sst_evs_assessment)
+            scorecard_obj.sst_evs_assessment = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"drawing_theory_{student.student_id}", scorecard_obj.drawing_theory)
+            scorecard_obj.drawing_theory = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"drawing_assessment_{student.student_id}", scorecard_obj.drawing_assessment)
+            scorecard_obj.drawing_assessment = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"computer_music_theory_{student.student_id}", scorecard_obj.computer_music_theory)
+            scorecard_obj.computer_music_theory = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"computer_music_assessment_{student.student_id}", scorecard_obj.computer_music_assessment)
+            scorecard_obj.computer_music_assessment = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"gk_theory_{student.student_id}", scorecard_obj.gk_theory)
+            scorecard_obj.gk_theory = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"gk_assessment_{student.student_id}", scorecard_obj.gk_assessment)
+            scorecard_obj.gk_assessment = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"punjabi_skt_theory_{student.student_id}", scorecard_obj.punjabi_skt_theory)
+            scorecard_obj.punjabi_skt_theory = temp_marks if temp_marks != '' else 0
+            temp_marks = data.get(f"punjabi_skt_assessment_{student.student_id}", scorecard_obj.punjabi_skt_assessment)
+            scorecard_obj.punjabi_skt_assessment = temp_marks if temp_marks != '' else 0
             scorecard_obj.save()
 
     scorecards = Scorecard.objects.filter(
@@ -130,6 +148,131 @@ def marksheet_view(request, sheet_id):
         'scorecards': scorecards,
         'marksheet': marksheet_obj
     })
+
+
+
+@login_required(login_url='/login')
+@bronzelogger
+def marksheet_pdf_download(request, marksheet_id):
+    from .models import Marksheet, Scorecard  # adjust import if needed
+    
+    marksheet = Marksheet.objects.get(pk=marksheet_id)
+    scorecards = Scorecard.objects.filter(marksheet_id=marksheet).select_related('student').order_by('student__roll_number')
+
+    # -------- Header Info ----------
+    header_data = [
+        ['Marksheet ID', marksheet.marksheet_id],
+        ['Batch', marksheet.batch],
+        ['Class', marksheet.forclass],
+        ['Term', marksheet.term],
+    ]
+
+    # -------- Table Header ----------
+    if marksheet.forclass > 8:
+        subjects = ["Hindi", "English", "Maths", "Science", "SST/EVS", "Punjabi/Skt"]
+    elif marksheet.forclass > 5:
+        subjects = ["Hindi", "English", "Maths", "Science", "SST/EVS", "Punjabi/Skt", "Computer\nMusic", "GK"]
+    else:
+        subjects = ["Hindi", "English", "Maths", "SST/EVS", "Drawing", "Computer\nMusic", "GK"]
+
+    cols = []
+    for sub in subjects:
+        cols.append(sub)
+        cols.append('')
+        cols.append('')
+    columns = [["Roll\nNo", "Name"] + cols + ["Marks\nObtained", "Percent"],
+               ['', ''] + ['th', 'as', 'T'] * len(subjects) + ['', '']]
+
+    # -------- Table Body ----------
+    table_rows = []
+    for s in scorecards:
+        row = [
+            s.student.roll_number,
+            s.student.name,
+        ]
+
+        # Main Subjects
+        subs = []
+        graded_subs = []
+        if marksheet.forclass > 8:
+            subs = ["hindi", "english", "maths", "science", "sst_evs", 'punjabi_skt']
+        elif marksheet.forclass > 5:
+            subs = ["hindi", "english", "maths", "science", "sst_evs", "punjabi_skt"]
+            graded_subs = ["computer_music", "gk"]
+        else:
+            subs = ["hindi", "english", "maths", "sst_evs"]
+            graded_subs = ["drawing", "computer_music", "gk"]
+        for sub in subs:
+            row.append(getattr(s, f"{sub}_theory", ""))
+            row.append(getattr(s, f"{sub}_assessment", ""))
+            row.append((getattr(s, f"{sub}_theory", 0) or 0) + (getattr(s, f"{sub}_assessment", 0) or 0))
+
+        # Graded subjects (show grade as string)
+        for sub in graded_subs:
+            row.append(getattr(s, f"{sub}_theory", 0) or 0)
+            row.append(getattr(s, f"{sub}_assessment", ""))
+            total = (getattr(s, f"{sub}_theory", 0) or 0) + (getattr(s, f"{sub}_assessment", 0) or 0)
+            row.append(grade_this_score(total, 50))
+
+        # Totals
+        main_total = sum(
+            (getattr(s, f"{sub}_theory", 0) or 0) + (getattr(s, f"{sub}_assessment", 0) or 0)
+            for sub in subs
+        )
+        percentage = round(main_total / (len(subs) * 100) * 100, 2)
+        row.append(main_total)
+        row.append(percentage)
+        table_rows.append(row)
+
+    # Combine header and data
+    data = columns + table_rows
+
+    # -------- PDF Generation ----------
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="marksheet_{marksheet_id}.pdf"'
+
+    doc = SimpleDocTemplate(response, pagesize=landscape(A4),
+                            leftMargin=0.4*inch, rightMargin=0.4*inch, topMargin=0.4*inch, bottomMargin=0.4*inch)
+    styles = getSampleStyleSheet()
+    elements = []
+
+    elements.append(Paragraph("Class Marksheet Summary", styles["Heading1"]))
+    elements.append(Spacer(1, 0.1 * inch))
+
+    header_table = Table(header_data, colWidths=[2*inch, 4*inch])
+    header_table.setStyle(TableStyle([
+        ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+        ('FONTNAME', (0,0), (-1,-1), 'Helvetica-Bold'),
+        ('BACKGROUND', (0,0), (-1,-1), colors.whitesmoke),
+        ('FONTSIZE', (0,0), (-1,-1), 13),
+        ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+    ]))
+    elements.append(header_table)
+    elements.append(Spacer(1, 0.2 * inch))
+
+    t = Table(data, repeatRows=2)
+
+    # ---- FIXED SPAN LOGIC ----
+    span_commands = []
+    start_col = 2
+    for _ in subjects:
+        span_commands.append(('SPAN', (start_col, 0), (start_col + 2, 0)))
+        start_col += 3
+
+    t.setStyle(TableStyle([
+        ('GRID', (0,0), (-1,-1), 0.25, colors.black),
+        ('BACKGROUND', (0,0), (-1,0), colors.lightgrey),
+        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+        ('FONTNAME', (0,0), (-1,-1), 'Helvetica'),
+        ('FONTSIZE', (0,0), (-1,-1), 10),
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ('ROWBACKGROUNDS', (0,2), (-1,-1), [colors.whitesmoke, colors.white]),
+    ] + span_commands))
+    elements.append(t)
+
+    doc.build(elements)
+    return response
+
 
 
 
@@ -299,11 +442,11 @@ def scorecard_pdf_download(request, student_id, sem):
             ['Class', card.marksheet_id.forclass],
             ['Roll Number', student.roll_number],
         ]
-        t_student = Table(data_student, colWidths=[2*inch, 2*inch])
+        t_student = Table(data_student, colWidths=[3*inch, 3*inch])
         t_student.setStyle(TableStyle([
             ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('FONTSIZE', (0, 0), (-1, -1), 13),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('LEFTPADDING', (0, 0), (-1, -1), 5),
             ('RIGHTPADDING', (0, 0), (-1, -1), 5),
@@ -331,7 +474,7 @@ def scorecard_pdf_download(request, student_id, sem):
 
     for term in terms:
         elements.append(Paragraph(term['term'], styles['Heading2']))
-        t = Table(term['data'], colWidths=[1.5*inch, 0.75*inch, 0.9*inch, 0.75*inch, 0.75*inch, 0.9*inch, 0.75*inch])
+        t = Table(term['data'], colWidths=[1.5*inch, 0.75*inch, 1.2*inch, 1*inch, 0.75*inch, 1.2*inch, 0.75*inch], rowHeights=[0.5*inch]*len(term['data']))
         t.setStyle(TableStyle([
             ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
             ('SPAN', (1, 0), (2, 0)),
@@ -341,7 +484,7 @@ def scorecard_pdf_download(request, student_id, sem):
             ('ALIGN', (0, 0), (0, -1), 'LEFT'),
             ('ALIGN', (1, 0), (-1, -1), 'CENTER'),
             ('FONTNAME', (0, 0), (-1, 1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 8),
+            ('FONTSIZE', (0, 0), (-1, -1), 13),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('LEFTPADDING', (0, 0), (-1, -1), 4),
             ('RIGHTPADDING', (0, 0), (-1, -1), 4),
@@ -364,15 +507,15 @@ def scorecard_pdf_download(request, student_id, sem):
             perc = final_marks[f'{key}_final_percentage']
             overall_summary.append([sub['name']] + term_totals + [str(tot), str(perc)])
 
-        col_widths = [1.5*inch] + [0.75*inch] * num_terms + [0.75*inch, 0.75*inch]
-        t_summary = Table(overall_summary, colWidths=col_widths)
+        col_widths = [1.5*inch] + [0.9*inch] * num_terms + [1*inch, 1.3*inch]
+        t_summary = Table(overall_summary, colWidths=col_widths,rowHeights=[0.5*inch]*len(overall_summary))
         t_summary.setStyle(TableStyle([
             ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
             ('SPAN', (1, 0), (1 + num_terms - 1, 0)),
             ('ALIGN', (0, 0), (0, -1), 'LEFT'),
             ('ALIGN', (1, 0), (-1, -1), 'CENTER'),
             ('FONTNAME', (0, 0), (-1, 1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 8),
+            ('FONTSIZE', (0, 0), (-1, -1), 13),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('LEFTPADDING', (0, 0), (-1, -1), 4),
             ('RIGHTPADDING', (0, 0), (-1, -1), 4),
