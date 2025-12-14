@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import datetime
 from pyexpat.errors import messages
 from django.contrib import admin
 from django.urls import include, path
@@ -27,6 +28,7 @@ from django.contrib.auth import authenticate, login, logout
 from utils.bronzelogger import bronzelogger
 
 def login_page(request):
+    error_message = []
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -37,8 +39,11 @@ def login_page(request):
             login(request, user)  # logs the user in
             return redirect('index')  # replace with your post-login page
         else:
-            messages.error(request, "Invalid ID or Password")
-    return render(request, 'pages/login.html')
+            error_message = [request, "Invalid ID or Password"]
+    return render(request, 'pages/login.html', {
+        'now':datetime.datetime.now(),
+        'error_message': error_message
+    })
 
 def logout_page(request):
     logout(request)  # logs out the user

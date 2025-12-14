@@ -1,11 +1,12 @@
+{% load static %}
 <style>
     .navbar-custom {
-        background-color: #101011;
+        background-color: #112D4E;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     }
     .navbar-brand {
         color: #f0f0f0 !important;
-        font-weight: bold;
+        font-weight: bold;  
         font-size: 1.4rem;
         letter-spacing: 1px;
     }
@@ -22,7 +23,7 @@
         <div class="container-fluid">
             <!-- Site Name -->
             <a class="navbar-brand" href="{% url 'index' %}">
-                <img style="width: 80px;" src="https://raw.githubusercontent.com/leonado10000/school_portal/refs/heads/master/static/Schoolmate1.png" alt="SM">
+                <img style="width: 80px;" src="{% static 'Schoolmate_themed.png' %}" alt="SM">
             </a>
 
             <!-- Options Menu -->
@@ -33,15 +34,14 @@
             <!-- Collapsible Menu (for future items) -->
             <div class="collapse navbar-collapse" id="navbarOptions">
                 <ul class="navbar-nav ms-auto">
-                    <!-- Example Option -->
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="{% url 'checks_index' %}">Notebooks</a>
+                        <a class="nav-link text-light" href="{% url 'all_current_terms' %}">📅 Marksheet</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="{% url 'all_current_terms' %}">Marksheet</a>
+                        <a class="nav-link text-light" href="{% url 'checks_index' %}">📓 Notebooks</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="{% url 'all_students' %}">All Students</a>
+                        <a class="nav-link text-light" href="{% url 'all_students' %}">🎓 All Students</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-light" href="{% url 'logout' %}">Logout</a>

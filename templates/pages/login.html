@@ -4,51 +4,171 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login | InvoiceOS</title>
+  <title>Login | School Mate</title>
 
-  <!-- Professional font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <!-- GSAP for smooth, elegant motion -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-tQe7TnWkzH7qFZKXaVGk5f0rXyC3JkOexxw9gC7kQb1rI7b5Y9w8oVmR3mW3bq1qv8lV2yTkvYqvQm8p2W0YzQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      /* background: #F9F7F7; */
+      height: 75vh;
+    }
+    /* Mobile */
+    @media (max-width: 799px) {
+      body {
+        font-family: 'Inter', sans-serif;
+        background-image: url('{% static "wave_bg.gif" %}');
+        /* background-size: cover; */
+        /* background-repeat: no-repeat; */
+        background-position: 50% 135%;
+      }
+      #left-box {
+        display: none;
+      }
+      #right-box {
+        padding: 20px;
+      }
+      #right-box img {
+        max-width: 100%;
+        height: auto;
+        object-fit: contain;
+        border-radius: 20px;
+      }
+      #page-container {
+        min-height: 100%;
+        padding-top: 0px;
+        margin-bottom: 10px;
+      }
+      .login-container {
+        max-width: 330px;
+      }
+    }
+
+    /* Desktop */
+    @media (min-width: 800px) {
+      html, body {
+        font-family: 'Inter', sans-serif;
+        height: 100%;
+      }
+      #page-container {
+        height: 85%;
+        display: grid;
+        grid-template-columns: 5fr 4fr;
+        padding-top: 10px;
+        margin-bottom: 10px;
+      }
+      #right-box {
+        padding-top: 10px;
+        padding-right: 15%;
+        padding-left: 15%;
+        /* border-left: 2px solid #112D4E; */
+      }
+      #left-box {
+        padding-top: 5%;
+        padding-right: 5%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: first baseline;
+      }
+      #left-box img, #right-box img {
+        max-width: 100%;
+        height: auto;
+        object-fit: contain;
+        border-radius: 20px;
+      }
+    }
+
+    .login-container {
+      display: grid;
+      grid-template-rows: 6fr 4fr;
+      margin: 0 auto;
+      padding-top: 20px;
+    }
+
+    .brand-title {
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .brand-title img {
+      width: 200px;
+    }
+
+    .brand-sub {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    .dark-text {
+      -webkit-text-fill-color: #112D4E;
+    }
+    .light-text {
+      -webkit-text-fill-color: #F9F7F7;
+    }
+  </style>
 </head>
-
 <body>
-    <div class="portal"></div>
+  
+  <div id="page-container">
+    <div id="left-box">
+      <img src="{% static 'bg_gif.gif' %}" alt="BG">
+    </div>
 
-    <!-- Login card -->
-    <section class="card" aria-labelledby="title">
-      <div class="brand">
-        <span class="logo-dot"></span>
-        <h1 id="title">School Mate</h1>
-        <small>Secure Sign-in</small>
+    <div id="right-box">
+
+      {% if error_message %}
+        <div class="alert alert-danger" role="alert">
+          {{ error_message.1 }}
+        </div>
+      {% endif %}
+
+      <div class="login-container">
+        <div class="brand-title">
+          <a href="{% url 'index' %}">
+            <img src="{% static 'Schoolmate_main_upscaled_lite.png' %}" alt="SM">
+          </a>
+        </div>
+
+        <div class="brand-sub">Secure Sign-in</div>
+
+        <form method="POST" autocomplete="on" novalidate>
+          {% csrf_token %}
+
+          <div style="background-color: #dbe2efc6; padding: 20px; border-radius: 10px;margin-bottom: 20px;">
+            <div class="mb-3">
+              <label for="username" class="form-label dark-text">Teacher ID</label>
+              <input type="text" class="form-control" id="username" name="username" placeholder="teacher@school.edu" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="password" class="form-label dark-text">Password</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
+              <p style="padding-top: 5px; font-size: 13px; text-align: right;">
+                <input class="form-check-input" type="checkbox" id="show_password" onclick="togglePassword()">
+                Show Password
+              </p>
+
+              <script>
+              function togglePassword() {
+                const field = document.getElementById("password");
+                field.type = field.type === "password" ? "text" : "password";
+              }
+              </script>
+
+            </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn py-2 light-text" style="background-color: #3F72AF;">Log In</button>
+          </div>
+          
+          </div>
+        </form>
       </div>
 
-      <form method="POST" class="form" autocomplete="on" novalidate>
-        {% csrf_token %}
-
-        <div class="slot">
-          <label for="username">Teacher ID</label>
-          <div style="position:relative">
-            <input id="username" name="username" type="text" required placeholder="jane@acme.co" inputmode="email" />
-          </div>
-        </div>
-
-        <div class="slot">
-          <label for="password">Password</label>
-          <div style="position:relative">
-            <input id="password" name="password" type="password" required placeholder="••••••••" />
-          </div>
-        </div>
-
-        <div class="submit">
-          <button type="submit" class="primary">
-            Enter System
-        </button>
-        </div>
-
-        <p class="meta">© {{ now|date:"Y" }} School Mate — encrypted & audit-ready</p>
-      </form>
-    </section>
+    </div>
   </div>
+
+  {% include 'common/footer.html' %}
+
 </body>
 </html>

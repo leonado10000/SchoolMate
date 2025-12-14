@@ -28,6 +28,7 @@ POSTGRES_PASSWORD=os.getenv('PGPASSWORD')
 POSTGRES_DATABASE=os.getenv('PGDATABASE')
 POSTGRES_URL_NO_SSL=os.getenv('POSTGRES_URL_NO_SSL')
 POSTGRES_PRISMA_URL=os.getenv('POSTGRES_PRISMA_URL')
+DEV_HOST_NAMES = ['Leo']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -36,7 +37,10 @@ POSTGRES_PRISMA_URL=os.getenv('POSTGRES_PRISMA_URL')
 SECRET_KEY = "django-insecure-5r-fa!1ng$vglt0%d+xv3q!&alf0bfwulo5yg^=5lm@%vdl+4u"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if socket.gethostname() not in DEV_HOST_NAMES:
+    DEBUG = True
+else:
+    DEBUG = True
 
 ALLOWED_HOSTS = ['school-portal-leonado10000.vercel.app','.vercel.app','192.168.0.187','*','172.20.10.7','192.168.208.13']
 
@@ -94,7 +98,7 @@ WSGI_APPLICATION = "school_portal.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-if socket.gethostname() != 'Leo':
+if socket.gethostname() not in DEV_HOST_NAMES:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',

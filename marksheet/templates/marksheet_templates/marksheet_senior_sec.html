@@ -62,7 +62,7 @@
     }
 
     th.info, td.info {
-        background-color: #f8f9fa;
+        background-color: #DBE2EF;
     }
 
     input[type="number"] {
@@ -131,42 +131,120 @@
     } */
 </style>
 <style>
-    /* Scrollable container */
+    .app-container {
+        padding: 15px;
+    }
+    /* ===== SCROLL CONTAINER (REQUIRED) ===== */
     .marksheet-container {
-        overflow-x: auto;
-        width: 100%;
+        max-height: 75vh;          /* IMPORTANT */
+        overflow: auto;
         position: relative;
+        border: 1px solid #dee2e6;
+        margin-top: 40px;
+        margin-bottom: 40px;
     }
 
-    /* Keep first 3 columns fixed */
-    table th.sticky-col,
-    table td.sticky-col {
-        -webkit-text-fill-color: #95e8ff;
+    /* ===== TABLE FIXES ===== */
+    table {
+        width: max-content;        /* allows horizontal scroll */
+        border-collapse: separate; /* REQUIRED for sticky */
+        border-spacing: 0;
+    }
+
+    /* ===== ALL CELLS ===== */
+    th, td {
+        border: 1px solid #112d4e94;
+        padding: 10px;
+        text-align: center;
+        background: #fff;
+    }
+
+    /* ===== STICKY HEADER (ROW 1: SUBJECTS) ===== */
+    thead tr:first-child th {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: #3F72AF;
+        color: #F9F7F7;
+    }
+
+    /* ===== STICKY HEADER (ROW 2: THY / ASS / TOTAL) ===== */
+    thead tr:nth-child(2) th {
+        position: sticky;
+        top: 38px;                 /* height of first row */
+        z-index: 25;
+        background: #f1f3f5;
+    }
+
+    /* ===== STICKY COLUMN: ROLL NO ===== */
+    .sticky-col {
         position: sticky;
         left: 0;
-        z-index: 2;
-        background: rgb(70, 70, 70); /* match your info cell bg */
+        z-index: 100;
+        background: #f8f9fa;
     }
-    table th.sticky-col-2,
-    table td.sticky-col-2 {
-        -webkit-text-fill-color: #ffffff;
+
+    /* ===== STICKY COLUMN: NAME ===== */
+    .sticky-col-2 {
         position: sticky;
-        left: 44px; /* adjust based on col width */
-        z-index: 2;
-        background: rgb(70, 70, 70);
+        left: 44px;                /* adjust to Roll No width */
+        z-index: 90;
+        background: #f8f9fa;
     }
+
+    /* ===== CORNER CELLS (HEADER + COLUMN OVERLAP) ===== */
+    thead th.sticky-col,
+    thead th.sticky-col-2 {
+        z-index: 120;
+    }
+
+    /* ===== SUBJECT COLORS (KEEP YOUR THEME) ===== */
+    th.subject-name { background-color: #e3f2fd; }
+    th.theory        { background-color: #fff3cd; }
+    th.assessment    { background-color: #d4edda; }
+    th.subtotal      { background-color: #f8d7da; }
+    th.total         { background-color: #d6d8db; }
+
+    .name-cell {
+        max-width: 90px;
+        white-space: normal;
+        word-break: break-word;
+        line-height: 1.2;
+    }
+
+    td a {
+        text-decoration: none;
+        color: #112D4E;
+        font-weight: 500;
+    }
+
+    .submit-btn {
+        background-color: #3F72AF;
+        color: #F9F7F7;
+    }
+
     #student_details {
+        background-color: #DBE2EF;
         padding: 10px;
-        background-color: whitesmoke;
-        border-radius: 10px;
+        border-radius: 8px;
     }
+
+    .sub-details {
+        margin-top: 10px;
+        /* background-color: #F9F7F7; */
+        border-radius: 6px;
+        font-size: 10px;
+        color: #585858;
+    }   
 </style>
 
 <div id="student_details">
-    Marksheet ID : {{ marksheet.marksheet_id }} <br>
-    Batch : {{ marksheet.batch }} <br>
     Class : {{ marksheet.forclass }} <br>
-    Term : {{ marksheet.term }} <br>
+    Term : {{ marksheet.term.8 }} <br>
+    <div class="sub-details">
+        Marksheet ID : {{ marksheet.marksheet_id }} <br>
+        Batch ID : {{ marksheet.batch }} <br>
+    </div>
 </div>
 
 <form action="{% url 'marksheet_view' marksheet.pk %}" method="post">
@@ -177,7 +255,7 @@
     <table>
         <thead>
         <tr>
-            <th rowspan="2" class="info sticky-col">Roll No.</th>
+            <th rowspan="2" class="info sticky-col">Roll <br> No.</th>
             <th rowspan="2" class="info sticky-col-2">Name</th>
 
             <!-- Hardcoded subjects from Scorecard model -->
@@ -195,32 +273,32 @@
             <!-- Hindi -->
             <th class="theory">THY. <br>(80)</th>
             <th class="assessment">ASS. <br>(20)</th>
-            <th class="subtotal">TOTAL (100)</th>
+            <th class="subtotal">TOTAL<br>(100)</th>
 
             <!-- English -->
             <th class="theory">THY. <br>(80)</th>
             <th class="assessment">ASS. <br>(20)</th>
-            <th class="subtotal">TOTAL (100)</th>
+            <th class="subtotal">TOTAL<br>(100)</th>
 
             <!-- Maths -->
             <th class="theory">THY. <br>(80)</th>
             <th class="assessment">ASS. <br>(20)</th>
-            <th class="subtotal">TOTAL (100)</th>
+            <th class="subtotal">TOTAL<br>(100)</th>
 
             <!-- Science -->
             <th class="theory">THY. <br>(80)</th>
             <th class="assessment">ASS. <br>(20)</th>
-            <th class="subtotal">TOTAL (100)</th>
+            <th class="subtotal">TOTAL<br>(100)</th>
 
             <!-- SST/EVS -->
             <th class="theory">THY. <br>(80)</th>
             <th class="assessment">ASS. <br>(20)</th>
-            <th class="subtotal">TOTAL (100)</th>
+            <th class="subtotal">TOTAL<br>(100)</th>
 
             <!-- Punjabi/SKT -->
             <th class="theory">THY. <br>(80)</th>
             <th class="assessment">ASS. <br>(20)</th>
-            <th class="subtotal">TOTAL (100)</th>
+            <th class="subtotal">TOTAL<br>(100)</th>
         </tr>
         </thead>
 
@@ -228,7 +306,7 @@
             {% for scorecard in scorecards %}
             <tr data-student-id="{{ scorecard.student.student_id }}">
                 <td class="info sticky-col">{{ scorecard.student.roll_number }}</td>
-                <td class="info sticky-col-2"><a href="{% url 'student_scorecard' scorecard.student.student_id %}">{{ scorecard.student.name }}</a></td>
+                <td class="info sticky-col-2 name-cell"><a href="{% url 'student_scorecard' scorecard.student.student_id %}">{{ scorecard.student.name }}</a></td>
                 <!-- Hindi -->
                 <td class="theory" data-label="Hindi Theory">
                     <input type="number" name="hindi_theory_{{ scorecard.student.student_id }}"

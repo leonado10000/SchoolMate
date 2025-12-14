@@ -1,6 +1,11 @@
 import requests
+from school_portal.settings import DEBUG
 
 def addrecord(action_function_name, request):
+    # dont log in debug mode
+    if DEBUG:
+        return 200, "debug mode active"
+    
     school_mate_map = {
         'all_current_terms':'Checking terms',
         'marksheet_view':'Viewing marksheet',
