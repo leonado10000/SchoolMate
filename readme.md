@@ -10,7 +10,6 @@
 priority list
 3
 4
-2
 
 ### Structure
 
