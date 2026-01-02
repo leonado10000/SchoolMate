@@ -38,7 +38,7 @@ SECRET_KEY = "django-insecure-5r-fa!1ng$vglt0%d+xv3q!&alf0bfwulo5yg^=5lm@%vdl+4u
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if socket.gethostname() not in DEV_HOST_NAMES:
-    DEBUG = True
+    DEBUG = False
 else:
     DEBUG = True
 
