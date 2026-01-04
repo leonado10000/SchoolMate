@@ -1,11 +1,12 @@
 # to dos
-1. designer/Colorful result download page.
+1. designer/Colorful result download page. (partial)
 2. up and down button for shifting select marks.
-3. multiple teachers handling.
-4. video tutorial. with audio
+3. multiple teachers handling in notebook checking.
+4. video tutorial. with audio (Done)
 5. auto send result to parents.
 6. Make a front page with better UI. (DONE)
 7. set up env and secret hiding. (DONE)
+8. In marksheet results, need totals and percentage in matrix for quick verification.
 
 priority list
 3
