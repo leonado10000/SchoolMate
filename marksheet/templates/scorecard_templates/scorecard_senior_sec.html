@@ -121,6 +121,11 @@
                     <td> <input type="number" class="input-marks" id="total-gk-{{card.id}}" readonly> </td>
                     <td> <input type="number" class="input-marks" id="percentage-gk-{{card.id}}" readonly> </td>
                 </tr> -->
+                <tr>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td><input type="number" class="input-marks" id="term-total-{{card.id}}" readonly></td>
+                    <td><input type="number" class="input-marks" id="term-percentage-{{card.id}}" readonly> </td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -255,6 +260,12 @@
             catch (e) {
             }
         });
+
+        // All sub sum of each term
+        // sen sec : total max marks = 500
+        document.getElementById(`term-total-${term}`).value = subjects.reduce((acc, s) => acc + toIntFromId(`${s.total}-${term}`), 0);
+        document.getElementById(`term-percentage-${term}`).value = (toIntFromId(`term-total-${term}`) /  (500) * 100) || 0;
+
 
         // reset overall totals to 0
         subjects.forEach(s => {

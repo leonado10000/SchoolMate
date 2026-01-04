@@ -5,23 +5,33 @@
 {% include 'scorecard_common/student_details.html' %}
 
 <style>
+    .app-container {
+        padding: 15px;
+    }
     .input-marks {
         width: 55px;
         border: 0px;
         background-color: transparent;
         text-align: center;
     }
+    .download-btn {
+        min-width: 250px;
+        margin-bottom: 10px;
+    }
+    .container {
+        margin: 0;
+    }
 </style>
 
-<div class="container mt-4">
-    <a href="{% url 'scorecard_download' student.student_id 4 %}" class="btn btn-success simple-margin">Download Full Result</a> <br>
-    <a href="{% url 'scorecard_download' student_id=student.student_id sem=1 %}" class="btn btn-primary simple-margin">Download 1st sem Result</a>
-    <a href="{% url 'scorecard_download' student_id=student.student_id sem=2 %}" class="btn btn-info simple-margin">Download 2nd sem Result</a>
-    <a href="{% url 'scorecard_download' student_id=student.student_id sem=3 %}" class="btn btn-light simple-margin">Download 3rd sem Result</a>
+<div class="container ">
+    <a href="{% url 'scorecard_download' student.student_id 4 %}" class="btn btn-success download-btn">Download Full Result</a>
+    <a href="{% url 'scorecard_download' student.student_id 1 %}" class="btn btn-primary download-btn">Download 1st sem Result</a>
+    <a href="{% url 'scorecard_download' student.student_id 2 %}" class="btn btn-primary download-btn">Download 2nd sem Result</a>
+    <a href="{% url 'scorecard_download' student.student_id 3 %}" class="btn btn-primary download-btn">Download 3rd sem Result</a>
 
     {% for card in scorecards %}
     <!-- Term -->
-    <a href="{% url 'marksheet_view' card.marksheet_id.pk %}"><h4 class="mb-3" style="-webkit-text-fill-color: aliceblue;">Term {{ card.term_number }}</h4></a>
+    <a href="{% url 'marksheet_view' card.marksheet_id.pk %}"><h4 class="mb-3">Term {{ card.term_number }}</h4></a>
     <div class="table-responsive mb-5">
         <table class="table table-bordered table-striped text-center align-middle">
             <thead class="table-light">
@@ -131,13 +141,18 @@
                     <td> <input type="number" class="input-marks" id="total-gk-{{card.id}}" readonly> </td>
                     <td> <input type="number" class="input-marks" id="percentage-gk-{{card.id}}" readonly> </td>
                 </tr>
+                <tr>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td><input type="number" class="input-marks" id="term-total-{{card.id}}" readonly></td>
+                    <td><input type="number" class="input-marks" id="term-percentage-{{card.id}}" readonly> </td>
+                </tr>
             </tbody>
         </table>
     </div>
     {% endfor %}
 
 
-    <h4 class="mb-3" style="-webkit-text-fill-color: aliceblue;">Overall Summary</h4>
+    <h4 class="mb-3">Overall Summary</h4>
     <div class="table-responsive mb-5">
         <table class="table table-bordered table-striped text-center align-middle">
             <thead class="table-light">
@@ -218,6 +233,14 @@
                     <td> <input type="number" class="input-marks" id="total-gk" readonly> </td>
                     <td> <input type="number" class="input-marks" id="percentage-gk" readonly> </td>
                 </tr>
+                <tr>
+                    <td></td>
+                    {% for id in card_ids %}
+                        <td> <input type="number" class="input-marks" id="term-total-{{id}}" readonly> </td>
+                    {% endfor %}
+                    <td> <input type="number" class="input-marks" id="overall-total" readonly> </td>
+                    <td> <input type="number" class="input-marks" id="overall-percentage" readonly> </td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -264,6 +287,14 @@
             if (PercentageTermEl) PercentageTermEl.value = (toIntFromId(`total-${s.name}`) / (card_ids.length * 100) * 100) || 0;
         });
 
+        // All sub sum of each term
+        // primary : total max marks = 700
+        document.querySelectorAll(`#term-total-${term}`).forEach( el => {
+            el.value = subjects.reduce((acc, s) => acc + toIntFromId(`${s.total}-${term}`), 0)
+        });
+        document.getElementById(`term-percentage-${term}`).value = (toIntFromId(`term-total-${term}`) / (700) * 100) || 0;
+
+
         // reset overall totals to 0
         subjects.forEach(s => {
             const overallEl = document.getElementById(s.total);
@@ -271,6 +302,7 @@
         });
 
         // accumulate over all terms (use j, not term)
+        let final_total = 0;
         card_ids.forEach(j => {
             subjects.forEach(s => {
                 const overallEl = document.getElementById(s.total);
@@ -278,11 +310,15 @@
                 const overallVal = toIntFromId(s.total); // current overall
                 const termVal = termEl ? (isNaN(parseInt(termEl.value)) ? 0 : parseInt(termEl.value)) : 0;
                 if (overallEl) {
-                    overallEl.value = overallVal + termVal;
+                    overallEl.value = overallVal + termVal;            
+                    final_total += termVal;
                     document.getElementById(s.percentage).value = (toIntFromId(s.total) / (3 * 100) * 100) || 0;
                 }
             });
         });
+        console.log(final_total, document.getElementById('overall-total'));
+        document.getElementById('overall-total').value = final_total;
+        document.getElementById('overall-percentage').value = ((final_total / (3 * 700)) * 100) || 0;
     }
 
     document.addEventListener("DOMContentLoaded", ()=> {
