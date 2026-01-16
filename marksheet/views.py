@@ -476,18 +476,28 @@ def scorecard_pdf_download(request, student_id, sem):
 
     selected_cards = [card] if sem < 4 else scorecards
     terms = []
+    each_term_totals = []
     for card in selected_cards:
         term_data = [
             ['Subject', 'Max Marks', '', 'Pass Marks', 'Obtained Marks', '', ''],
             ['', 'Theory', 'Assessment', '', 'Theory', 'Assessment', 'Total'],
         ]
-        for sub in [s for s in subject_list if s['key'] in show_keys]:
+        for i,sub in enumerate([s for s in subject_list if s['key'] in show_keys]):
             key = sub['key']
             th = getattr(card, f'{key}_theory', 0)
             ass = getattr(card, f'{key}_assessment', 0)
             tot = getattr(card, f'{key}_total')
-            term_data.append([sub['name'], str(theory_max), str(assess_max), str(pass_marks), str(th), str(ass), str(tot)])
+            if subject_list[i].get('graded', False):
+                _theory_max = 25
+                _assess_max = 25
+                _pass_marks = 17
+            else:
+                _theory_max = theory_max
+                _assess_max = assess_max
+                _pass_marks = 17
+            term_data.append([sub['name'], str(_theory_max), str(_assess_max), str(_pass_marks), str(th), str(ass), str(tot)])
         term_data.append(['Total', '', '', '', '', '', str(card.term_total)])
+        each_term_totals.append(str(card.term_total))
         terms.append({'term': f'Term {card.term_number}', 'data': term_data})
 
     for term in terms:
@@ -524,6 +534,9 @@ def scorecard_pdf_download(request, student_id, sem):
             tot = final_marks[f'{key}_final_total']
             perc = final_marks[f'{key}_final_percentage']
             overall_summary.append([sub['name']] + term_totals + [str(tot), str(perc)])
+        overall_summary.append(
+            ['Overall Total'] + each_term_totals + [str(sum(final_marks[f'{key}_final_total'] if isinstance(final_marks[f'{key}_final_total'], int) else 0 for key in show_keys)), '']
+        )
 
         col_widths = [1.5*inch] + [0.9*inch] * num_terms + [1*inch, 1.3*inch]
         t_summary = Table(overall_summary, colWidths=col_widths,rowHeights=[0.5*inch]*len(overall_summary))
