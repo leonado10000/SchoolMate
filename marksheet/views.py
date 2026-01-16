@@ -291,20 +291,37 @@ def student_scorecard(request, student_id):
         student=student,
         marksheet_id__in=marksheets).order_by('marksheet_id__term')
     i = 1
+    graded_result = {'computer_music':0, 'gk':0}
     for card in scorecards:
         card.term_number = i
+        card.gk_grade = grade_this_score(
+            (card.gk_theory or 0) + (card.gk_assessment or 0),
+            50
+        )
+        graded_result['gk'] += (card.gk_theory or 0) + (card.gk_assessment or 0)
+        card.computer_music_grade = grade_this_score(
+            (card.computer_music_theory or 0) + (card.computer_music_assessment or 0),
+            50
+        )
+        graded_result['computer_music'] += (card.computer_music_theory or 0) + (card.computer_music_assessment or 0)
         i += 1
+    
+    for sub in graded_result:
+        graded_result[sub] = grade_this_score(graded_result[sub], 150)
+
     card_ids = [card.id for card in scorecards]
     sheet_template = 'scorecard_templates/scorecard_primary.html'
     if marksheets[0].forclass > 8:
         sheet_template = 'scorecard_templates/scorecard_senior_sec.html'
     elif marksheets[0].forclass > 5:
         sheet_template = 'scorecard_templates/scorecard_sec.html'
+    
     return render(request, sheet_template ,{
         'student':student,
         'scorecards':scorecards,
         'card_ids':card_ids,
-        'card':scorecards[0]
+        'card':scorecards[0],
+        'graded_result':graded_result
     })
 
 @login_required(login_url='/login')
