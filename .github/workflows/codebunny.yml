@@ -16,4 +16,4 @@ jobs:
           -H "Content-Type: application/json" \
           -d '${{ toJSON(github) }}' \
           --fail \
-          --max-time 60
+          --max-time 600
