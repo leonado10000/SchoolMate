@@ -21,7 +21,7 @@
 
     {% for card in scorecards %}
     <!-- Term -->
-    <a href="{% url 'marksheet_view' card.marksheet_id.pk %}"><h4 class="mb-3" style="-webkit-text-fill-color: aliceblue;">Term {{ card.term_number }}</h4></a>
+    <a href="{% url 'marksheet_view' card.marksheet_id.pk %}"><h4 class="mb-3">Term {{ card.term_number }}</h4></a>
     <div class="table-responsive mb-5">
         <table class="table table-bordered table-striped text-center align-middle">
             <thead class="table-light">
@@ -91,6 +91,16 @@
                     <td> <input type="number" class="input-marks" id="total-sst-{{card.id}}" readonly> </td>
                     <td> <input type="number" class="input-marks" id="percentage-sst-{{card.id}}" readonly> </td>
                 </tr>
+                <tr>
+                    <td>Punjabi/Sanskrit/Physical</td>
+                    <td>80</td>
+                    <td>20</td>
+                    <td>35</td>
+                    <td> <input id="punjabi_skt_theory_{{card.id}}" class="input-marks" type="number" value="{{card.punjabi_skt_theory}}"> </td>
+                    <td> <input id="punjabi_skt_assessment_{{card.id}}" class="input-marks" type="number" value="{{card.punjabi_skt_assessment}}"> </td>
+                    <td> <input type="number" class="input-marks" id="total-punjabi_skt-{{card.id}}" readonly> </td>
+                    <td> <input type="number" class="input-marks" id="percentage-punjabi_skt-{{card.id}}" readonly> </td>
+                </tr>
                 <!-- <tr>
                     <td>Drawing</td>
                     <td>80</td>
@@ -132,7 +142,7 @@
     {% endfor %}
 
 
-    <h4 class="mb-3" style="-webkit-text-fill-color: aliceblue;">Overall Summary</h4>
+    <h4 class="mb-3">Overall Summary</h4>
     <div class="table-responsive mb-5">
         <table class="table table-bordered table-striped text-center align-middle">
             <thead class="table-light">
@@ -189,6 +199,22 @@
                     <td> <input type="number" class="input-marks" id="total-sst" readonly> </td>
                     <td> <input type="number" class="input-marks" id="percentage-sst" readonly> </td>
                 </tr>
+                <tr>
+                    <td>Punjabi/Sanskrit/Physical</td>
+                    {% for id in card_ids %}
+                        <td> <input type="number" class="input-marks" id="punjabi_skt-term{{id}}" readonly> </td>
+                    {% endfor %}
+                    <td> <input type="number" class="input-marks" id="total-punjabi_skt" readonly> </td>
+                    <td> <input type="number" class="input-marks" id="percentage-punjabi_skt" readonly> </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    {% for id in card_ids %}
+                        <td> <input type="number" class="input-marks" id="term-total-{{id}}" readonly> </td>
+                    {% endfor %}
+                    <td> <input type="number" class="input-marks" id="overall-total" readonly> </td>
+                    <td> <input type="number" class="input-marks" id="overall-percentage" readonly> </td>
+                </tr>
                 <!-- <tr>
                     <td>Drawing</td>
                     {% for id in card_ids %}
@@ -229,43 +255,70 @@
         return isNaN(n) ? 0 : n;
     }
 
+    function grade_this_score(score, max_score) {
+        // Convert score to grade
+        
+        var percentage = (score / max_score) * 100
+        if (percentage >= 91) {
+            return 'A++' + `(${score})`
+        } else if (percentage >= 81) {
+            return 'A+' + `(${score})`
+        } else if (percentage >= 71) {
+            return 'A' + `(${score})`
+        } else if (percentage >= 61) {
+            return 'B' + `(${score})`
+        } else if (percentage >= 51) {
+            return 'C' + `(${score})`
+        } else if (percentage >= 41) {
+            return 'D' + `(${score})`
+        } else if (percentage >= 33) {
+            return 'E' + `(${score})`
+        } else {
+            return 'F' + `(${score})`
+        }
+    }
+
     function adjust_term_marks(term) {
         const subjects = [
-            {name: 'hindi', theory: 'hindi_theory', assessment: 'hindi_assessment', total: 'total-hindi', percentage: 'percentage-hindi'},
-            {name: 'english', theory: 'english_theory', assessment: 'english_assessment', total: 'total-english', percentage: 'percentage-english'},
-            {name: 'maths', theory: 'maths_theory', assessment: 'maths_assessment', total: 'total-maths', percentage: 'percentage-maths'},
-            {name: 'science', theory: 'science_theory', assessment: 'science_assessment', total: 'total-science', percentage: 'percentage-science'},
-            {name: 'sst', theory: 'sst_evs_theory', assessment: 'sst_evs_assessment', total: 'total-sst', percentage: 'percentage-sst'},
-            {name: 'drawing', theory: 'drawing_theory', assessment: 'drawing_assessment', total: 'total-drawing', percentage: 'percentage-drawing'},
-            {name: 'computer', theory: 'computer_theory', assessment: 'computer_assessment', total: 'total-computer', percentage: 'percentage-computer'},
-            {name: 'gk', theory: 'gk_theory', assessment: 'gk_assessment', total: 'total-gk', percentage: 'percentage-gk'}
+            {name: 'hindi', theory: 'hindi_theory', assessment: 'hindi_assessment', total: 'total-hindi', percentage: 'percentage-hindi', graded: false},
+            {name: 'english', theory: 'english_theory', assessment: 'english_assessment', total: 'total-english', percentage: 'percentage-english', graded: false},
+            {name: 'maths', theory: 'maths_theory', assessment: 'maths_assessment', total: 'total-maths', percentage: 'percentage-maths', graded: false},
+            {name: 'science', theory: 'science_theory', assessment: 'science_assessment', total: 'total-science', percentage: 'percentage-science', graded: false},
+            {name: 'sst', theory: 'sst_evs_theory', assessment: 'sst_evs_assessment', total: 'total-sst', percentage: 'percentage-sst', graded: false},
+            {name: 'drawing', theory: 'drawing_theory', assessment: 'drawing_assessment', total: 'total-drawing', percentage: 'percentage-drawing', graded: true},
+            {name: 'computer', theory: 'computer_theory', assessment: 'computer_assessment', total: 'total-computer', percentage: 'percentage-computer', graded: true},
+            {name: 'gk', theory: 'gk_theory', assessment: 'gk_assessment', total: 'total-gk', percentage: 'percentage-gk', graded: true},
+            {name: 'punjabi_skt', theory: 'punjabi_skt_theory', assessment: 'punjabi_skt_assessment', total: 'total-punjabi_skt', percentage: 'percentage-punjabi_skt', graded: false},
         ];
 
         // per-term totals & copy to summary-term fields
         subjects.forEach(s => {
-            try {
-                const th = toIntFromId(`${s.theory}_${term}`);
-                const as = toIntFromId(`${s.assessment}_${term}`);
-                const tval = th + as;
+            const th = toIntFromId(`${s.theory}_${term}`);
+            const as = toIntFromId(`${s.assessment}_${term}`);
+            const tval = th + as;
 
-                const termTotalEl = document.getElementById(`${s.total}-${term}`);
-                if (termTotalEl) termTotalEl.value = tval;
-                const termPercentageEl = document.getElementById(`${s.percentage}-${term}`);
-                if (termPercentageEl) termPercentageEl.value = (tval / (100) * 100) || 0;
+            const termTotalEl = document.getElementById(`${s.total}-${term}`);
+            if (termTotalEl) termTotalEl.value = tval;
+            const termPercentageEl = document.getElementById(`${s.percentage}-${term}`);
+            if (termPercentageEl) termPercentageEl.value = (tval / (100) * 100) || 0;
 
-                // overall scorecard result
-                const TotalTermEl = document.getElementById(`${s.name}-term${term}`);
+            const TotalTermEl = document.getElementById(`${s.name}-term${term}`);
+            if (s.graded) {
                 if (TotalTermEl) TotalTermEl.value = tval;
             }
-            catch (e) {
+            else {
+                if (TotalTermEl) TotalTermEl.value = tval;
             }
+            const PercentageTermEl = document.getElementById(`percentage-${s.name}`);
+            if (PercentageTermEl) PercentageTermEl.value = (toIntFromId(`total-${s.name}`) / (card_ids.length * 100) * 100) || 0;
         });
 
         // All sub sum of each term
-        // sen sec : total max marks = 500
-        document.getElementById(`term-total-${term}`).value = subjects.reduce((acc, s) => acc + toIntFromId(`${s.total}-${term}`), 0);
-        document.getElementById(`term-percentage-${term}`).value = (toIntFromId(`term-total-${term}`) /  (500) * 100) || 0;
-
+        // primary : total max marks = 600
+        document.querySelectorAll(`#term-total-${term}`).forEach( el => {
+            el.value = subjects.reduce((acc, s) => acc + toIntFromId(`${s.total}-${term}`), 0)
+        });
+        document.getElementById(`term-percentage-${term}`).value = (toIntFromId(`term-total-${term}`) / (600) * 100) || 0;
 
         // reset overall totals to 0
         subjects.forEach(s => {
@@ -274,18 +327,39 @@
         });
 
         // accumulate over all terms (use j, not term)
+        let final_total = 0;
         card_ids.forEach(j => {
             subjects.forEach(s => {
-                const overallEl = document.getElementById(s.total);
-                const termEl = document.getElementById(`${s.total}-${j}`);
-                const overallVal = toIntFromId(s.total); // current overall
-                const termVal = termEl ? (isNaN(parseInt(termEl.value)) ? 0 : parseInt(termEl.value)) : 0;
-                if (overallEl) {
-                    overallEl.value = overallVal + termVal;
-                    document.getElementById(s.percentage).value = (toIntFromId(s.total) / (3 * 100) * 100) || 0;
-                }
+                try {
+                    if (s.graded) {
+                        const overallEl = document.getElementById(s.total);
+                        const termEl = document.getElementById(`${s.total}-${j}`);
+                        const overallVal = toIntFromId(s.total);
+                        const termVal = termEl ? (isNaN(parseInt(termEl.value)) ? 0 : parseInt(termEl.value)) : 0;
+
+                        if (overallEl) {
+                            overallEl.value = grade_this_score(overallVal + termVal, 150);
+                            document.getElementById(s.percentage).value = (toIntFromId(s.total) / (3 * 50) * 100) || 0;
+                        }
+                    }
+                    else {
+                        const overallEl = document.getElementById(s.total);
+                        const termEl = document.getElementById(`${s.total}-${j}`);
+                        const overallVal = toIntFromId(s.total); // current overall
+                        const termVal = termEl ? (isNaN(parseInt(termEl.value)) ? 0 : parseInt(termEl.value)) : 0;
+                        if (overallEl) {
+                            overallEl.value = overallVal + termVal;
+                            document.getElementById(s.percentage).value = (toIntFromId(s.total) / (3 * 100) * 100) || 0;
+                            
+                            // used later
+                            final_total += termVal;
+                        }
+                    }
+                } catch (e) {}
             });
         });
+        document.getElementById('overall-total').value = final_total;
+        document.getElementById('overall-percentage').value = ((final_total / (3 * 600)) * 100) || 0;
     }
 
     document.addEventListener("DOMContentLoaded", ()=> {
