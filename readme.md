@@ -1,55 +1,45 @@
-# to dos
-1. designer/Colorful result download page. (partial)
-2. up and down button for shifting select marks.
-3. multiple teachers handling in notebook checking.
-4. video tutorial. with audio (Done)
-5. auto send result to parents.
-6. Make a front page with better UI. (DONE)
-7. set up env and secret hiding. (DONE)
-8. In marksheet results, need totals and percentage in matrix for quick verification.
+# 🎓 SchoolMate
 
-priority list
-3
-4
+A modern **School Management System** built with Django to manage student records, batches, and structured academic data — with real dataset integration.
 
-### Structure
+---
 
-1. Core
-- School
-- Subject
-    - code : (Class)[Name](version)
-- Batch
-    - batch_id : batch_1
-    - associated_school : SCHOOL
+## 🚀 Live Links
 
-2. People
-- Teacher
-    - teacher_id : t_00001
-- Student 
-    - student_id : s_00001
+- 🔗 GitHub Repository  
+  https://github.com/leonado10000/SchoolMate
 
-2. Notebook
-- SubmissionRecord
-    - submission_id : sub_1
-- NotebookSubmission
-    - submission_id : SUBMISSIONRECORD
+- 📊 Kaggle Dataset (generated using this system)  
+  https://www.kaggle.com/datasets/leonado10000/students-data
+  
+- Live link  
+  https://school-portal-leonado10000.vercel.app
+---
 
+## 🧠 About the Project
 
-# for vercel deployement
-requirements.txt should go in main app (school_portal folder)
-static files require static url, root and dir then a collect static command and an add to urlpatterns as an url (in school_portal/urls.py)
+**SchoolMate** is designed to act as a centralized platform for managing school operations:
 
-### Trivia
-1. On the nb_checking page, student records lost their roll number order after updates. Postgres (Neon serverless) doesn't guarantee order without an explicit ORDER BY.
+- Maintain structured student records
+- Organize classes and batches
+- Store parent and contact details
+- Generate clean datasets for analysis
 
-Option 1 – Batch Re-save:
-Re-save all 40 records after any update to maintain physical order.
+This project bridges **application development + real data usage**, making it useful for both admin systems and ML workflows.
 
-❌ 40 DB writes per update, not efficient.
+---
 
-Option 2 – Sort on Read (✔️ Recommended):
-Use .order_by('student__roll_number') when querying.
+## ✨ Features
 
-✅ Minimal cost (~O(n log n)), clean and scalable for small sets.
+- 🧑‍🎓 Add / Edit / Delete Students  
+- 🏫 Batch / Class Management  
+- 📋 Detailed Student Profiles  
+- 🔎 Easy Data Retrieval  
+- 📊 Dataset generation for analytics  
+- 🎨 Clean admin-friendly UI  
 
-Use Option 2 for consistent and efficient ordering.
+---
+
+## 📸 Screenshots
+
+![Dashboard](static/Schoolmate1.png)
