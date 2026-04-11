@@ -52,9 +52,11 @@ This is not just CRUD — it's a **data-backed system** that connects applicatio
 ## 📸 Interface Preview
 
 <p align="center">
-  <img src="static/dashboard.png" width="30%">
-  <img src="static/student-form.png" width="30%">
-  <img src="static/student-list.png" width="30%">
+  <img src="https://raw.githubusercontent.com/leonado10000/SchoolMate/refs/heads/master/static/er_light.png" width="30%">
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/leonado10000/SchoolMate/refs/heads/master/static/er_dark.png" width="30%">
 </p>
 
 > Images are sourced from `/static/` — update filenames if needed.
