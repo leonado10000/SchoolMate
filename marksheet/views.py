@@ -21,7 +21,7 @@ def all_current_terms(request):
     """
     returns list of all current classes
     """
-    all_classes = Batch.objects.all().order_by('current_class')
+    all_classes = Batch.objects.filter(status='Active').order_by('current_class')
     return render(request, 'marksheet/terms.html', {
         'classes' : all_classes
     })
@@ -39,7 +39,7 @@ def marksheet_view(request, sheet_id):
     # if its a marksheet made from the terms page
     # It has batch and term value, which will be used to find marksheet
     if sheet_id == "new":
-        this_batch = Batch.objects.filter(batch_id=data.get('batch')).first()
+        this_batch = Batch.objects.filter(batch_id=data.get('batch'), status='Active').first()
         term_value = f"2026-27_{data.get('term')}"
         marksheet_obj, created_mks = Marksheet.objects.get_or_create(
                 batch=this_batch,
