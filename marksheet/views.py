@@ -21,7 +21,7 @@ def all_current_terms(request):
     """
     returns list of all current classes
     """
-    all_classes = Batch.objects.all().order_by('current_class')
+    all_classes = Batch.objects.filter(status='Active').order_by('current_class')
     return render(request, 'marksheet/terms.html', {
         'classes' : all_classes
     })
