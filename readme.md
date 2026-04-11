@@ -1,56 +1,98 @@
-# to dos
-1. designer/Colorful result download page. (partial)
-2. up and down button for shifting select marks.
-3. multiple teachers handling in notebook checking.
-4. video tutorial. with audio (Done)
-5. auto send result to parents.
-6. Make a front page with better UI. (DONE)
-7. set up env and secret hiding. (DONE)
-8. In marksheet results, need totals and percentage in matrix for quick verification.
+<p align="center">
+  <img src="static/demo.gif" alt="SchoolMate Demo" width="100%" />
+</p>
 
-priority list
-3
-4
-2
+<p align="center">
+  <b>Manage students. Structure data. Generate insights.</b><br>
+  A modern Django-powered system built for real-world academic workflows.
+</p>
 
-### Structure
+<p align="center">
+  <a href="https://github.com/leonado10000/SchoolMate"><img src="https://img.shields.io/badge/Repo-Active-black?style=for-the-badge&logo=github"></a>
+  <a href="https://www.kaggle.com/datasets/leonado10000/students-data"><img src="https://img.shields.io/badge/Dataset-Kaggle-blue?style=for-the-badge&logo=kaggle"></a>
+  <a href="https://rahul-jangra-leonado10000.vercel.app/"><img src="https://img.shields.io/badge/Portfolio-Live-green?style=for-the-badge"></a>
+</p>
 
-1. Core
-- School
-- Subject
-    - code : (Class)[Name](version)
-- Batch
-    - batch_id : batch_1
-    - associated_school : SCHOOL
+---
 
-2. People
-- Teacher
-    - teacher_id : t_00001
-- Student 
-    - student_id : s_00001
+## 🧠 Overview
 
-2. Notebook
-- SubmissionRecord
-    - submission_id : sub_1
-- NotebookSubmission
-    - submission_id : SUBMISSIONRECORD
+**SchoolMate** is a full-stack school management system designed to:
 
+- Centralize student data
+- Simplify administrative workflows
+- Generate structured datasets for analysis
 
-# for vercel deployement
-requirements.txt should go in main app (school_portal folder)
-static files require static url, root and dir then a collect static command and an add to urlpatterns as an url (in school_portal/urls.py)
+This is not just CRUD — it's a **data-backed system** that connects application design with real-world data usage.
 
-### Trivia
-1. On the nb_checking page, student records lost their roll number order after updates. Postgres (Neon serverless) doesn't guarantee order without an explicit ORDER BY.
+---
 
-Option 1 – Batch Re-save:
-Re-save all 40 records after any update to maintain physical order.
+## ✨ Core Capabilities
 
-❌ 40 DB writes per update, not efficient.
+### 🧑‍🎓 Student Lifecycle Management
+- Create, update, and manage student profiles
+- Store academic + personal details
+- Structured and scalable schema
 
-Option 2 – Sort on Read (✔️ Recommended):
-Use .order_by('student__roll_number') when querying.
+### 🏫 Batch & Class Organization
+- Assign students to classes dynamically
+- Maintain hierarchical structure
 
-✅ Minimal cost (~O(n log n)), clean and scalable for small sets.
+### 📊 Data-Driven Design
+- Generates real dataset used on Kaggle
+- Enables ML / analytics workflows
 
-Use Option 2 for consistent and efficient ordering.
+### ⚡ Admin-Focused UX
+- Minimal friction UI
+- Fast data entry + retrieval
+- Designed for operational efficiency
+
+---
+
+## 📸 Interface Preview
+
+<p align="center">
+  <img src="static/dashboard.png" width="30%">
+  <img src="static/student-form.png" width="30%">
+  <img src="static/student-list.png" width="30%">
+</p>
+
+> Images are sourced from `/static/` — update filenames if needed.
+
+---
+
+## ER
+
+<p align="center">
+  <img src="github.com/leonado10000/SchoolMate/blob/master/static/er_diagram.png?raw=true" width="30%">
+</p>
+<p align="center">
+  <img src="github.com/leonado10000/SchoolMate/blob/master/static/er_diagram_dark.png?raw=true" width="30%">
+</p>
+
+## 🏗️ Tech Architecture
+
+| Layer        | Technology |
+|-------------|-----------|
+| Backend     | Django (Python) |
+| Frontend    | HTML, CSS, Bootstrap |
+| Database    | SQLite (default) |
+| Data Layer  | Kaggle dataset integration |
+
+---
+
+## ⚙️ Local Setup
+
+```bash id="setup-2026"
+git clone https://github.com/leonado10000/SchoolMate.git
+
+cd SchoolMate
+
+python -m venv venv
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # Mac/Linux
+
+pip install -r requirements.txt
+
+python manage.py migrate
+python manage.py runserver
