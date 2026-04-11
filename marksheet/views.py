@@ -39,7 +39,7 @@ def marksheet_view(request, sheet_id):
     # if its a marksheet made from the terms page
     # It has batch and term value, which will be used to find marksheet
     if sheet_id == "new":
-        this_batch = Batch.objects.filter(batch_id=data.get('batch')).first()
+        this_batch = Batch.objects.filter(batch_id=data.get('batch'), status='Active').first()
         term_value = f"2026-27_{data.get('term')}"
         marksheet_obj, created_mks = Marksheet.objects.get_or_create(
                 batch=this_batch,
