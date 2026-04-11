@@ -17,8 +17,8 @@
 
 <div class="page-wrap">
   <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4 class="mb-0 text-light">👩‍🎓 Students – Class {{ batch.current_class }} ({{ batch.batch_id }})</h4>
-      <a href="{% url 'class_list' %}" class="btn btn-sm btn-outline-light">⬅️ Back</a>
+      <h4 class="mb-0 text-dark">👩‍🎓 Students – Class {{ batch.current_class }}</h4>
+      <a href="{% url 'class_list' %}" class="btn btn-sm btn-outline-dark">⬅️ Back</a>
   </div>
 
   <!-- MOBILE LIST -->
@@ -28,10 +28,10 @@
         <div class="d-flex justify-content-between align-items-start">
           <div>
             <a href="{% url 'student_detail' student.pk %}" class="h6 text-decoration-none text-light">{{ student.name }}</a>
-            <div class="small-muted">ID: {{ student.student_id }}</div>
+            <!-- <div class="small-muted">ID: {{ student.student_id }}</div> -->
           </div>
           <div class="text-end small-muted">
-            Roll {{ student.roll_number }}
+            Roll No. {{ student.roll_number }}
           </div>
         </div>
         <div class="mt-2 action-links">

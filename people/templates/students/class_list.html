@@ -16,7 +16,7 @@
 
 <div class="page-wrap">
   <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4 class="mb-0 text-light">📘 Classes / Batches</h4>
+      <h4 class="mb-0 text-dark">📘 Classes / Batches</h4>
       <a href="{% url 'student_create' %}" class="btn btn-sm btn-success">➕ Add Student</a>
   </div>
 
@@ -26,9 +26,9 @@
       <a href="{% url 'student_list_by_batch' batch.pk %}" class="list-card d-block mb-2 text-decoration-none">
         <div class="d-flex justify-content-between">
           <span class="h6 text-light">Class {{ batch.current_class }}</span>
-          <span class="small-muted">{{ batch.batch_id }}</span>
+          <!-- <span class="small-muted">{{ batch.batch_id }}</span> -->
         </div>
-        <div class="small-muted">{{ batch.associate_school.name }}</div>
+        <div class="small-muted">Total Students : {{ batch.number_of_students }}</div>
       </a>
     {% empty %}
       <div class="list-card text-center">No classes found</div>
