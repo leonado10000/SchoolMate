@@ -1,0 +1,224 @@
+{% extends 'common/index.html' %}
+
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --font-family: 'Poppins', sans-serif;
+        --bg-page: #f9fafb;
+        --bg-card: #ffffff;
+        --bg-card-header: #f1f3f5;
+        --bg-table-head: #f8f9fa;
+
+        --color-text: #333;
+        --color-checked: #1c6f1c;
+        --color-incomplete: #a10f0f;
+
+        --bg-checked-light: #e6f7e6;
+        --bg-incomplete-light: #ffecec;
+    }
+
+    body {
+        font-family: var(--font-family);
+        background-color: var(--bg-page);
+        color: var(--color-text);
+    }
+
+    /* Student Card */
+    .student-card {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        background: var(--bg-card);
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        padding: 12px;
+        margin-bottom: 20px;
+    }
+    .student-photo {
+        width: 70px;
+        height: 70px;
+        border-radius: 8px;
+        background-color: #e9ecef;
+        object-fit: cover;
+    }
+    .student-info {
+        flex: 1;
+    }
+    .student-info table {
+        margin-bottom: 0;
+        font-size: 0.9rem;
+    }
+
+    /* Card Layout */
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        margin-bottom: 20px;
+        background-color: var(--bg-card);
+    }
+    .card-header {
+        background-color: var(--bg-card-header);
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 8px 12px;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    /* Table Styles */
+    .table thead th {
+        background-color: var(--bg-table-head);
+        font-size: 0.85rem;
+        text-align: center;
+    }
+    .table td {
+        font-size: 0.85rem;
+        vertical-align: middle !important;
+        text-align: center;
+        padding: 6px;
+    }
+
+    /* Status Headers */
+    .checked-header {
+        background-color: var(--bg-checked-light) !important;
+        color: var(--color-checked);
+    }
+    .incomplete-header {
+        background-color: var(--bg-incomplete-light) !important;
+        color: var(--color-incomplete);
+    }
+
+    /* Row Highlight Override */
+    table.table tbody tr.row-checked > td {
+        background-color: var(--bg-checked-light) !important;
+    }
+    table.table tbody tr.row-incomplete > td {
+        background-color: var(--bg-incomplete-light) !important;
+    }
+
+    @media (max-width: 768px) {
+        .student-card {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .student-photo {
+            width: 60px;
+            height: 60px;
+        }
+    }
+</style>
+
+<div class="container">
+
+    <!-- Student Info Card -->
+    <div class="student-card">
+        {% if student.photo_url %}
+            <img src="{{ student.photo_url }}" alt="{{ student.name }}" class="student-photo">
+        {% else %}
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXD-UFYdHGHWMSmt2DOeqv2lSF0v4VqPte2w&s" alt="No Photo" class="student-photo">
+        {% endif %}
+        <div class="student-info">
+            <table class="table table-sm table-borderless">
+                <tbody>
+                    <tr><th>Name:</th><td><a href="{% url 'student_checks_detail' student.student_id %}">{{ student.name }}</a></td></tr>
+                    <tr><th>Roll:</th><td>{{ student.roll_number }}</td></tr>
+                    <tr><th>Class:</th><td>{{ student.batch.current_class }}</td></tr>
+                    <tr><th>Phone:</th><td>{{ student.phone }}</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Submission Info Table -->
+    <div class="card">
+        <div class="card-header">Notebook Submissions</div>
+        <div class="card-body table-responsive">
+            <form action="" method="post">
+                <table class="table table-bordered table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Subject</th>
+                            <th>Teacher</th>
+                            <th>Date Assigned</th>
+                            <th class="checked-header">Checked</th>
+                            <th class="incomplete-header">Incomplete</th>
+                        </tr>
+                    </thead>
+
+                    <form action="" method="post">
+                        {% csrf_token %}
+                    <tbody>
+                        {% for record in records %}
+
+                            <input type="hidden" name="submission_id-{{ record.submission_id.submission_id }}" value="{{ record.submission_id.submission_id }}">
+                            <tr>
+                                <td>
+                                    <a href="{% url 'nb_checking' record.submission_id.submission_id %}" class="btn btn-outline-success btn-sm">
+                                        {{ record.submission_id.submission_id }}
+                                    </a>
+                                </td>
+                                <td>{{ record.submission_id.associated_subject }}</td>
+                                <td>{{ record.submission_id.associated_teacher }}</td>
+                                <td>{{ record.submission_id.add_date }}</td>
+                                <td>
+                                    <input type="date"
+                                        name="checked_date_{{ record.submission_id.submission_id }}"
+                                        class="form-control form-control-sm checked-date"
+                                        value="{% if record.checked_date %}{{ record.checked_date|date:'Y-m-d' }}{% endif %}">
+                                </td>
+                                <td>
+                                    <input type="date"
+                                        name="incomplete_date_{{ record.submission_id.submission_id }}"
+                                        class="form-control form-control-sm incomplete-date"
+                                       value="{% if record.incomplete_date %}{{ record.incomplete_date|date:'Y-m-d' }}{% endif %}">
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="6" class="text-muted">No submission records available.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                <button type="submit" class="btn btn-primary btn-sm w-100">Update Submissions</button>
+                            </td>
+                        </tr>
+                    </tfoot>
+                    </form>
+
+                </table>
+            </form>
+        </div>
+    </div>  
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    function updateRowHighlight(row) {
+        row.classList.remove('row-checked', 'row-incomplete');
+        const checkedInput = row.querySelector('.checked-date');
+        const incompleteInput = row.querySelector('.incomplete-date');
+
+        if (checkedInput && checkedInput.value.trim()) {
+            row.classList.add('row-checked');
+        } else if (incompleteInput && incompleteInput.value.trim()) {
+            row.classList.add('row-incomplete');
+        }
+    }
+
+    document.querySelectorAll('tbody tr').forEach(row => {
+        updateRowHighlight(row);
+
+        row.querySelectorAll('.checked-date, .incomplete-date').forEach(input => {
+            input.addEventListener('input', () => updateRowHighlight(row));
+        });
+    });
+});
+</script>
+
+{% endblock %}

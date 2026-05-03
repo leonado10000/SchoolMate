@@ -1,0 +1,328 @@
+{% extends 'common/index.html' %}
+
+{% block title %}
+    New Checking
+{% endblock %}
+
+{% block content %}
+<style>
+    thead {
+        background: linear-gradient(90deg, #4facfe, #43e97b);
+        color: white;
+    }
+
+    .table-container {
+        background-color: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        margin: 20px auto;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 12px 15px;
+        text-align: center;
+    }
+    th {
+        font-weight: 600;
+        font-size: 14px;
+    }
+    td {
+        font-size: 13px;
+        border-top: 1px solid #eee;
+    }
+    a {
+        color: #2a7ae4;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+
+    /* Bigger, prettier checkboxes */
+    input[type="checkbox"] {
+        width: 22px;
+        height: 22px;
+        cursor: pointer;
+        accent-color: #4facfe;
+        border-radius: 4px;
+    }
+
+    /* Row highlight states */
+    .completed-row {
+        background-color: #e8f9f0 !important;
+        box-shadow: inset 0 0 6px rgba(0, 128, 0, 0.4);
+    }
+    .incomplete-row {
+        background-color: #fdeaea !important;
+        box-shadow: inset 0 0 6px rgba(255, 0, 0, 0.4);
+    }
+    .neutral-row {
+        background-color: transparent !important;
+        box-shadow: none;
+    }
+
+    select, input[type="date"], button {
+        border: none;
+        outline: none;
+    }
+    select, input[type="date"] {
+        padding: 6px 10px;
+        border-radius: 6px;
+        background-color: #f1f5f9;
+        color: #333;
+        font-size: 13px;
+        border: 1px solid #ddd;
+        width: 100%;
+        transition: all 0.2s ease;
+    }
+    select:focus, input[type="date"]:focus {
+        border-color: #4facfe;
+        background-color: #fff;
+        box-shadow: 0 0 4px rgba(79,172,254,0.4);
+    }
+
+    button {
+        background: linear-gradient(45deg, #4facfe, #43e97b);
+        color: #fff;
+        font-weight: 600;
+        border-radius: 6px;
+        padding: 8px 12px;
+        transition: all 0.3s ease;
+    }
+    button:hover {
+        filter: brightness(1.1);
+    }
+
+    .sub-context-container {
+        background: linear-gradient(135deg, #ffecd2, #fcb69f);
+        padding: 15px;
+        border-radius: 12px;
+        margin: 15px auto;
+        max-width: 500px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .sub-context-label {
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: block;
+        color: #444;
+    }
+
+    #submit-btn {
+        background: linear-gradient(90deg, #ff758c, #ff7eb3);
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-size: 15px;
+        border: none;
+        cursor: pointer;
+    }
+    #submit-btn:hover {
+        filter: brightness(1.15);
+    }
+
+    @media (max-width: 768px) {
+        th, td {
+            font-size: 12px;
+            padding: 8px;
+        }
+        .table-container {
+            margin: 10px;
+        }
+        .table-container {
+            overflow: scroll;
+        }
+    }
+</style>
+
+{% if submission_record %}
+    <form action="{% url 'nb_checking' submission_record.submission_id %}" method="post">    
+{% else %}    
+    <form action="{% url 'nb_checking' 'new' %}" method="post">
+{% endif %}
+        
+{% csrf_token %}
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Teacher</th>
+                <th>Class</th>
+                <th>Subject</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ submission_record.submission_id }}</td>
+                <td>
+                    {{ teacher.name }}
+                    <input type="hidden" name="associated_teacher" value="{{ teacher.teacher_id }}">
+                </td>
+                <td>
+                    {{ batch.current_class }}
+                    <input type="hidden" name="associated_batch" value="{{ batch.batch_id }}">
+                </td>
+                <td>
+                    {{ subject.name }}
+                    <input type="hidden" name="associated_subject" value="{{ subject.code }}">
+                </td>
+                <td>
+                    {{ submission_record.add_date|date:'Y-m-d' }}
+                    <input type="hidden" name="check_date" value="{{ submission_record.add_date|date:'Y-m-d' }}">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="sub-context-container">
+    <label for="sub-context" class="sub-context-label">Select Sub-context</label>
+    <select class="form-select" name="sub-context" id="sub-context">
+        <option value="">{{ submission_record.subject_context }}</option>
+        <option value="History">History</option>
+        <option value="Geography">Geography</option>
+        <option value="Civics">Civics</option>
+        <option value="Economics">Economics</option>
+        <option value="Reader">Reader</option>
+        <option value="Reader (Book)">Reader (Book)</option>
+        <option value="Vyakran">Vyakran</option>
+        <option value="Vyakran (Book)">Vyakran (Book)</option>
+    </select>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Roll No.</th>
+                <th>Name</th>
+                <th>Completed</th>
+                <th>Incomplete</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <input type="hidden" name="submit-check" value="submit-check-record">
+            {% for record in records %}
+                <tr id="row-{{ record.student.student_id }}">
+                    <td><a href="{% url 'student_checks_detail' record.student.student_id %}">{{ record.student.roll_number }}</a></td>
+                    <td><a href="{% url 'student_checks_detail' record.student.student_id %}">{{ record.student.name }}</a></td>
+
+                    {% if record.checked_date %}
+                        <td>
+                            <input checked type="checkbox" name="student-{{ record.student.student_id }}-c-nb" 
+                                id="student-{{ record.student.student_id }}-c"
+                                oninput="add_check_date_func('{{ record.student.student_id }}'); updateRowColor('{{ record.student.student_id }}')">
+                        </td>
+                        <td>
+                            <input type="checkbox" name="student-{{ record.student.student_id }}-ic-nb" 
+                                id="student-{{ record.student.student_id }}-ic"
+                                oninput="add_check_date_func('{{ record.student.student_id }}'); updateRowColor('{{ record.student.student_id }}')">
+                        </td>
+                        <td>
+                            <input type="date" name="student-{{ record.student.student_id }}-date" 
+                               id="student-{{ record.student.student_id }}-date"
+                               value="{{ record.checked_date|date:'Y-m-d' }}">
+                        </td>
+                   {% else %}
+                        {% if record.incomplete_date %}
+                            <td>
+                                <input type="checkbox" name="student-{{ record.student.student_id }}-c-nb" 
+                                    id="student-{{ record.student.student_id }}-c"
+                                    oninput="add_check_date_func('{{ record.student.student_id }}'); updateRowColor('{{ record.student.student_id }}')">
+                            </td>
+                            <td>
+                                <input checked type="checkbox" name="student-{{ record.student.student_id }}-ic-nb" 
+                                    id="student-{{ record.student.student_id }}-ic"
+                                    oninput="add_check_date_func('{{ record.student.student_id }}'); updateRowColor('{{ record.student.student_id }}')">
+                            </td>
+                            <td>                
+                                <input type="date" name="student-{{ record.student.student_id }}-date" 
+                                   id="student-{{ record.student.student_id }}-date"
+                                    value="{{  record.incomplete_date|date:'Y-m-d' }}">
+                            </td>
+                        {% else %}
+                            <td>
+                                <input type="checkbox" name="student-{{ record.student.student_id }}-c-nb" 
+                                    id="student-{{ record.student.student_id }}-c"
+                                    oninput="add_check_date_func('{{ record.student.student_id }}'); updateRowColor('{{ record.student.student_id }}')">
+                            </td>
+                            <td>
+                                <input type="checkbox" name="student-{{ record.student.student_id }}-ic-nb" 
+                                    id="student-{{ record.student.student_id }}-ic"
+                                    oninput="add_check_date_func('{{ record.student.student_id }}'); updateRowColor('{{ record.student.student_id }}')">
+                            </td>
+                            <td>
+                                <input type="date" name="student-{{ record.student.student_id }}-date" 
+                                    id="student-{{ record.student.student_id }}-date"
+                                >
+                            </td>
+                        {% endif %}
+                    {% endif %}
+
+
+                    <td>
+                        <button type="button" onclick="remove_nb_date('{{ record.student.student_id }}')">Remove</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="text-center my-4">
+    <button type="submit" id="submit-btn">Submit</button>
+</div>
+
+<div style="display: none;" id="last_student_id" >{{ last_student_id }}</div>
+
+<script>
+    function add_check_date_func(student_id) {
+        document.getElementById(`student-${student_id}-date`).valueAsDate = new Date();
+    }
+
+    function remove_nb_date(student_id) {
+        document.getElementById(`student-${student_id}-c`).checked = false;
+        document.getElementById(`student-${student_id}-ic`).checked = false;
+        document.getElementById(`student-${student_id}-date`).value = '';
+        updateRowColor(student_id);
+    }
+
+    function updateRowColor(student_id) {
+        let completed = document.getElementById(`student-${student_id}-c`).checked;
+        let incomplete = document.getElementById(`student-${student_id}-ic`).checked;
+        let row = document.getElementById(`row-${student_id}`);
+
+        row.classList.remove("completed-row", "incomplete-row", "neutral-row");
+
+        if (completed && !incomplete) {
+            row.classList.add("completed-row");
+        } else if (incomplete && !completed) {
+            row.classList.add("incomplete-row");
+        } else {
+            row.classList.add("neutral-row");
+        }
+    }
+    n = document.getElementById("last_student_id").innerHTML
+    n = n.match(/\d+$/);
+    n = parseInt(n[0], 10);
+    for (let i = n-100; i < n+1; i++) {
+        try {
+            updateRowColor(`s_${i}`);
+        } catch (error) {
+        }
+    }
+</script>
+
+</form>
+{% endblock %}
