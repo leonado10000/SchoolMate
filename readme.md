@@ -5,7 +5,7 @@
 <p align="center">
   <b>Manage students. Structure data. Generate insights.</b><br>
   A modern Django-powered system built for real-world academic workflows.
-</p>
+</p>asdad
 
 <p align="center">
   <a href="https://github.com/leonado10000/SchoolMate"><img src="https://img.shields.io/badge/Repo-Active-black?style=for-the-badge&logo=github"></a>
