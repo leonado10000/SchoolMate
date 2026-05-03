@@ -1,0 +1,155 @@
+{% extends 'common/index.html' %}
+
+{% block content %}
+
+<style>
+
+    /* Table container styling */
+    .table-container {
+        background-color: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        margin: 20px auto;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        width: 95%;
+        max-width: 1100px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        background: linear-gradient(90deg, #4facfe, #43e97b);
+        color: white;
+    }
+
+    th, td {
+        padding: 12px 15px;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    th {
+        font-weight: 600;
+    }
+
+    td {
+        border-top: 1px solid #eee;
+        background-color: #fff;
+    }
+
+    /* Form elements */
+    select {
+        width: 100%;
+        padding: 8px 12px;
+        border-radius: 6px;
+        background-color: #f1f5f9;
+        border: 1px solid #ddd;
+        font-size: 13px;
+        transition: all 0.2s ease;
+    }
+
+    select:focus {
+        border-color: #4facfe;
+        background-color: #fff;
+        box-shadow: 0 0 4px rgba(79,172,254,0.4);
+    }
+
+    /* Links */
+    a {
+        color: #2a7ae4;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    /* Buttons */
+    button, .btn {
+        background: linear-gradient(45deg, #4facfe, #43e97b);
+        color: #fff;
+        font-weight: 600;
+        border-radius: 6px;
+        padding: 8px 12px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    button:hover, .btn:hover {
+        filter: brightness(1.1);
+    }
+
+    /* Records button small */
+    .btn-sm {
+        padding: 5px 8px;
+        font-size: 12px;
+        border-radius: 4px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        th, td {
+            font-size: 12px;
+            padding: 8px;
+        }
+        .table-container {
+            margin: 10px;
+        }
+    }
+</style>
+
+<!-- Form Table -->
+<div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Class</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        {{ batch.current_class }}                        
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</div>
+<!-- Records Table -->
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Date</th>
+                <th>Subject</th>
+                <th>Teacher</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+                <tr>
+                    <td><a href="{% url 'nb_checking' record.submission_id %}" class="btn btn-sm">{{ record.submission_id }}</a></td>
+                    <td>{{ record.add_date }}</td>
+                    <td>
+                        {{ record.associated_subject.name }}
+                        {% if record.subject_context %}
+                            ({{ record.subject_context }})
+                        {% endif %}
+                    </td>
+                    <td>{{ record.associated_teacher.name }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+</script>
+
+{% endblock %}

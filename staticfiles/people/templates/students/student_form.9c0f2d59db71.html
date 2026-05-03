@@ -1,0 +1,127 @@
+{% extends 'common/index.html' %}
+
+{% block title %}
+  {% if student %}Edit Student{% else %}Add Student{% endif %}
+{% endblock %}
+
+{% block content %}
+<style>
+  .form-wrap { background:#161a22; padding:14px; border-radius:12px; color:#e8eef8; }
+  label.small-muted { color:#9aa0a6; font-size: .9rem; }
+  .mb-3 .form-control { background: transparent; color: #e8eef8; border: 1px solid rgba(255,255,255,0.06); border-radius:8px; }
+</style>
+
+<div class="container py-3">
+  <h4 class="mb-3 text-dark">
+    {% if student %}Edit Student{% else %}Add Student{% endif %}
+  </h4>
+
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  <form method="post" class="form-wrap" action="{% if student %}{% url 'student_edit' student.pk %}{% else %}{% url 'student_create' %}{% endif %}">
+    {% csrf_token %}
+
+    <!-- Student ID -->
+    <div class="mb-3">
+      <label class="small-muted">Student ID</label>
+      <input name="student_id" class="form-control form-control-lg"
+        value="{% if form_data.student_id %}{{ form_data.student_id }}{% elif student %}{{ student.student_id }}{% endif %}"
+        disabled readonly>
+    </div>
+
+    <!-- Roll Number -->
+    <div class="mb-3">
+      <label class="small-muted">Roll Number *</label>
+      <input type="number" name="roll_number" class="form-control"
+        value="{% if form_data.roll_number %}{{ form_data.roll_number }}{% elif student %}{{ student.roll_number }}{% endif %}"
+        required>
+    </div>
+
+    <!-- Name -->
+    <div class="mb-3">
+      <label class="small-muted">Name *</label>
+      <input name="name" class="form-control"
+        value="{% if form_data.name %}{{ form_data.name }}{% elif student %}{{ student.name }}{% endif %}"
+        required>
+    </div>
+
+    <!-- Class -->
+    <div class="mb-3">
+      <label class="small-muted">Class *</label>
+      <select name="batch" class="form-select" required>
+        {% for batch in batches %}
+          
+          {% if form_data.batch %}
+            <option value="{{ batch.id }}"
+              {% if form_data.batch == batch.id|stringformat:"s" %}selected{% endif %}>
+              {{ batch.current_class }}
+            </option>
+          
+          {% elif student and student.batch %}
+            <option value="{{ batch.id }}"
+              {% if student.batch.id == batch.id %}selected{% endif %}>
+              {{ batch.current_class }}
+            </option>
+          
+          {% else %}
+            <option value="{{ batch.id }}">{{ batch.current_class }}</option>
+          {% endif %}
+
+        {% endfor %}
+      </select>
+    </div>
+
+    <hr style="border-color: rgba(255,255,255,0.04)">
+
+    <!-- Father's Name -->
+    <div class="mb-3">
+      <label class="small-muted">Father's Name</label>
+      <input name="fathers_name" class="form-control"
+        value="{% if form_data.fathers_name %}{{ form_data.fathers_name }}{% elif student %}{{ student.fathers_name }}{% endif %}">
+    </div>
+
+    <!-- Mother's Name -->
+    <div class="mb-3">
+      <label class="small-muted">Mother's Name</label>
+      <input name="mothers_name" class="form-control"
+        value="{% if form_data.mothers_name %}{{ form_data.mothers_name }}{% elif student %}{{ student.mothers_name }}{% endif %}">
+    </div>
+
+    <!-- DOB -->
+    <div class="mb-3">
+      <label class="small-muted">Date of Birth</label>
+      <input type="date" name="date_of_birth" class="form-control"
+        value="{% if form_data.date_of_birth %}{{ form_data.date_of_birth }}{% elif student %}{{ student.date_of_birth }}{% endif %}">
+    </div>
+
+    <!-- Contact -->
+    <div class="mb-3">
+      <label class="small-muted">Contact Number</label>
+      <input name="contact_number" class="form-control"
+        value="{% if form_data.contact_number %}{{ form_data.contact_number }}{% elif student %}{{ student.contact_number }}{% endif %}">
+    </div>
+
+    <!-- Address -->
+    <div class="mb-3">
+      <label class="small-muted">Address</label>
+      <input name="address" class="form-control"
+        value="{% if form_data.address %}{{ form_data.address }}{% elif student %}{{ student.address }}{% endif %}">
+    </div>
+
+    <!-- Buttons -->
+    <div class="d-grid gap-2">
+      <button class="btn {% if student %}btn-primary{% else %}btn-success{% endif %} btn-lg" type="submit">
+        {% if student %}Update{% else %}Create{% endif %}
+      </button>
+
+      <a href="{% if student %}{% url 'student_detail' student.pk %}{% else %}{% url 'class_list' %}{% endif %}"
+         class="btn btn-outline-light btn-lg">
+        Cancel
+      </a>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
