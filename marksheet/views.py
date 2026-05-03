@@ -21,7 +21,7 @@ def all_current_terms(request):
     """
     returns list of all current classes
     """
-    all_classes = Batch.objects.all().order_by('current_class')
+    all_classes = Batch.objects.filter(status='Active').order_by('current_class')
     return render(request, 'marksheet/terms.html', {
         'classes' : all_classes
     })
@@ -39,8 +39,8 @@ def marksheet_view(request, sheet_id):
     # if its a marksheet made from the terms page
     # It has batch and term value, which will be used to find marksheet
     if sheet_id == "new":
-        this_batch = Batch.objects.filter(batch_id=data.get('batch')).first()
-        term_value = f"2025-26_{data.get('term')}"
+        this_batch = Batch.objects.filter(batch_id=data.get('batch'), status='Active').first()
+        term_value = f"2026-27_{data.get('term')}"
         marksheet_obj, created_mks = Marksheet.objects.get_or_create(
                 batch=this_batch,
                 term=term_value,
@@ -291,20 +291,37 @@ def student_scorecard(request, student_id):
         student=student,
         marksheet_id__in=marksheets).order_by('marksheet_id__term')
     i = 1
+    graded_result = {'computer_music':0, 'gk':0}
     for card in scorecards:
         card.term_number = i
+        card.gk_grade = grade_this_score(
+            (card.gk_theory or 0) + (card.gk_assessment or 0),
+            50
+        )
+        graded_result['gk'] += (card.gk_theory or 0) + (card.gk_assessment or 0)
+        card.computer_music_grade = grade_this_score(
+            (card.computer_music_theory or 0) + (card.computer_music_assessment or 0),
+            50
+        )
+        graded_result['computer_music'] += (card.computer_music_theory or 0) + (card.computer_music_assessment or 0)
         i += 1
+    
+    for sub in graded_result:
+        graded_result[sub] = grade_this_score(graded_result[sub], 150)
+
     card_ids = [card.id for card in scorecards]
     sheet_template = 'scorecard_templates/scorecard_primary.html'
     if marksheets[0].forclass > 8:
         sheet_template = 'scorecard_templates/scorecard_senior_sec.html'
     elif marksheets[0].forclass > 5:
         sheet_template = 'scorecard_templates/scorecard_sec.html'
+    
     return render(request, sheet_template ,{
         'student':student,
         'scorecards':scorecards,
         'card_ids':card_ids,
-        'card':scorecards[0]
+        'card':scorecards[0],
+        'graded_result':graded_result
     })
 
 @login_required(login_url='/login')
@@ -459,18 +476,28 @@ def scorecard_pdf_download(request, student_id, sem):
 
     selected_cards = [card] if sem < 4 else scorecards
     terms = []
+    each_term_totals = []
     for card in selected_cards:
         term_data = [
             ['Subject', 'Max Marks', '', 'Pass Marks', 'Obtained Marks', '', ''],
             ['', 'Theory', 'Assessment', '', 'Theory', 'Assessment', 'Total'],
         ]
-        for sub in [s for s in subject_list if s['key'] in show_keys]:
+        for i,sub in enumerate([s for s in subject_list if s['key'] in show_keys]):
             key = sub['key']
             th = getattr(card, f'{key}_theory', 0)
             ass = getattr(card, f'{key}_assessment', 0)
             tot = getattr(card, f'{key}_total')
-            term_data.append([sub['name'], str(theory_max), str(assess_max), str(pass_marks), str(th), str(ass), str(tot)])
+            if subject_list[i].get('graded', False):
+                _theory_max = 25
+                _assess_max = 25
+                _pass_marks = 17
+            else:
+                _theory_max = theory_max
+                _assess_max = assess_max
+                _pass_marks = 17
+            term_data.append([sub['name'], str(_theory_max), str(_assess_max), str(_pass_marks), str(th), str(ass), str(tot)])
         term_data.append(['Total', '', '', '', '', '', str(card.term_total)])
+        each_term_totals.append(str(card.term_total))
         terms.append({'term': f'Term {card.term_number}', 'data': term_data})
 
     for term in terms:
@@ -507,6 +534,9 @@ def scorecard_pdf_download(request, student_id, sem):
             tot = final_marks[f'{key}_final_total']
             perc = final_marks[f'{key}_final_percentage']
             overall_summary.append([sub['name']] + term_totals + [str(tot), str(perc)])
+        overall_summary.append(
+            ['Overall Total'] + each_term_totals + [str(sum(final_marks[f'{key}_final_total'] if isinstance(final_marks[f'{key}_final_total'], int) else 0 for key in show_keys)), '']
+        )
 
         col_widths = [1.5*inch] + [0.9*inch] * num_terms + [1*inch, 1.3*inch]
         t_summary = Table(overall_summary, colWidths=col_widths,rowHeights=[0.5*inch]*len(overall_summary))

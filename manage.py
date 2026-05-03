@@ -2,7 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
+from get_ip import get_public_ip, get_local_ip
 
 def main():
     """Run administrative tasks."""
@@ -15,6 +15,8 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
+    if len(sys.argv) > 2 and sys.argv[2] == "ip":
+        sys.argv[2] = get_local_ip() + ":8000"
     execute_from_command_line(sys.argv)
 
 
