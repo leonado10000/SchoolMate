@@ -28,7 +28,7 @@ POSTGRES_PASSWORD=os.getenv('PGPASSWORD')
 POSTGRES_DATABASE=os.getenv('PGDATABASE')
 POSTGRES_URL_NO_SSL=os.getenv('POSTGRES_URL_NO_SSL')
 POSTGRES_PRISMA_URL=os.getenv('POSTGRES_PRISMA_URL')
-DEV_HOST_NAMES = ['Leo']
+DEV_HOST_NAMES = ['Leos']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
