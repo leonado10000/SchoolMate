@@ -379,9 +379,12 @@ def scorecard_pdf_download(request, student_id, sem):
     theory_max = 80 if class_level >= 6 else 40
     assess_max = 20 if class_level >= 6 else 10
     pass_marks = 35 if class_level >= 6 else 18
-
-    scorecards = Scorecard.objects.filter(student=student).order_by('marksheet_id__term')
-
+    
+    scorecards = Scorecard.objects.filter(
+        student=student,
+        marksheet_id__status="active"
+    ).select_related('marksheet_id').order_by('marksheet_id__term')
+    
     subject_list = [
         {'name': 'Hindi', 'key': 'hindi', 'graded': False},
         {'name': 'English', 'key': 'english', 'graded': False},
