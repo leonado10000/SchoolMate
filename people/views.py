@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 
-from django.db.models import Max
+from django.db.models import Max, IntegerField
+from django.db.models.functions import Cast, Substr
 from .models import Student, Batch
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
@@ -35,8 +36,11 @@ def student_detail(request, student_id):
 @bronzelogger
 def student_create(request):
     batches = Batch.objects.all()
-    last_id = Student.objects.aggregate(Max('student_id'))['student_id__max']
-    form_data = {"student_id": f"s_{(int(''.join(filter(str.isdigit, last_id))) + 1) if last_id else 1}"}
+    last_id = Student.objects.annotate(
+        num_id=Cast(Substr('student_id', 3), IntegerField())
+    ).aggregate(Max('num_id'))['num_id__max']
+
+    form_data = {"student_id": f"s_{(last_id or 0) + 1}"}
     print(form_data)
     # student = Student()
     # student.student_id = form_data["student_id"]
