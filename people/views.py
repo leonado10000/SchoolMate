@@ -51,7 +51,7 @@ def student_create(request):
         form_data = request.POST.dict()
         try:
             student = Student(
-                student_id=form_data.get("student_id", "s_"+str(len(Student.objects.all())+1)).strip(),
+                student_id=f"s_{(last_id or 0) + 1}",
                 roll_number=form_data.get("roll_number") or 0,
                 name=form_data.get("name", "").strip(),
                 batch_id=form_data.get("batch") or 1,
