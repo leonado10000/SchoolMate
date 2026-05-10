@@ -36,7 +36,7 @@ def student_detail(request, student_id):
 def student_create(request):
     batches = Batch.objects.all()
     last_id = Student.objects.aggregate(Max('student_id'))['student_id__max']
-    form_data = {"student_id": f"s_{int(last_id.split('_')[1]) + 1 if last_id else 1}"}
+    form_data = {"student_id": f"s_{(int(''.join(filter(str.isdigit, last_id))) + 1) if last_id else 1}"}
     print(form_data)
     # student = Student()
     # student.student_id = form_data["student_id"]
